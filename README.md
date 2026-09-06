@@ -27,7 +27,7 @@ Technologies
 
 Architecture
 ------------
-web/       HTTP/FastAPI routes
-service/   Business logic
-data/      Database operations
-models/    Data models
+- web/       HTTP/FastAPI routes
+- service/   Business logic
+- data/      Database operations
+- models/    Data models
