@@ -5,7 +5,6 @@ from models.errors import Duplicate, Missing
 from sqlite3 import IntegrityError
 from datetime import date
 
-# Create a cycling table if one does not already exist
 with get_db() as conn:
     curs = conn.cursor()
     curs.execute(
@@ -22,7 +21,6 @@ with get_db() as conn:
     """
     )
 
-# Convert a row of the cycling table into a Cycle object
 def row_to_model(row: tuple) -> Cycle:
     return Cycle(
         activity_id=row[0],
@@ -30,13 +28,9 @@ def row_to_model(row: tuple) -> Cycle:
         pace=row[3]
         )
 
-# Convert the information stored in a Cycle object into a dictionary
 def model_to_dict(cycle: Cycle) -> dict:
     return cycle.model_dump()
 
-# Select all columns from each row in the cycling table containing 
-# the input username. Convert each row into a Cycle object.
-# Return a list of all newly constructed Cycle objects.
 def get_all_cycles(user_name: str) -> list[Cycle]:
     qry = """
         SELECT * FROM cycling
@@ -45,10 +39,7 @@ def get_all_cycles(user_name: str) -> list[Cycle]:
     params = {"user_name": user_name}
     rows = execute_qry(qry, params)
     return [row_to_model(row) for row in rows]
-
-# Select all columns from the row in the cycling table containing
-# the input activity_id and username. Convert the row into a Cycle object
-# and return that object.  
+ 
 def get_one_cycle(activity_id: int, user_name: str) -> Cycle:
     qry = """
         SELECT * FROM cycling 
@@ -61,12 +52,6 @@ def get_one_cycle(activity_id: int, user_name: str) -> Cycle:
         return row_to_model(row)
     raise Missing(msg="Cycle does not exist")
 
-# Join the cycling table with the activity table by activity_id and 
-# the daily_log table by daily_log_id = id. Select all columns in the rows
-# of the cycling table containing the input username where the daily_log_id 
-# corresponds to a row of the daily_log table containing the input date.
-# Convert each row to a Cycle object and return a list of all newly constructed 
-# Cycle objects. 
 def get_cycles_by_date(cycle_date: date, user_name: str) -> list[Cycle]:
     qry = """
         SELECT cycling.* 
@@ -82,8 +67,6 @@ def get_cycles_by_date(cycle_date: date, user_name: str) -> list[Cycle]:
     rows = execute_qry(qry, params)
     return [row_to_model(row) for row in rows]
 
-# Create a new row in the cycling table using the information
-# in the input Cycle object and username.
 def create_cycle(cycle: Cycle, user_name: str) -> Cycle:
     if not cycle:
         raise ValueError("Activity cannot be empty")
@@ -111,10 +94,6 @@ def create_cycle(cycle: Cycle, user_name: str) -> Cycle:
         raise Duplicate(msg="Cycle already exists")
     return get_one_cycle(cycle.activity_id, user_name)
 
-# Select the row in the cycling table where the activity_id matches the
-# activity_id in the input Cycle object and the username matches the input
-# username. Replace the distance and pace of that row with the distance
-# and pace of the input Cycle object.
 def modify_cycle(cycle: Cycle, user_name: str) -> Cycle:
     if not cycle:
         raise ValueError("Activity cannot be empty")

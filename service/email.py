@@ -11,9 +11,9 @@ SMTP_USERNAME = os.getenv("SMTP_USERNAME")
 SMTP_PASSWORD = os.getenv("SMTP_PASSWORD")
 
 def send_password_reset_email(
-    recipient: str,
-    reset_link: str
-) -> None:
+        recipient: str,
+        reset_link: str
+    ) -> None:
     message = EmailMessage()
     message["Subject"] = "Password Reset"
     message["From"] = SMTP_USERNAME

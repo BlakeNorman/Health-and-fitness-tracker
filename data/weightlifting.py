@@ -5,7 +5,7 @@ from models.errors import Duplicate, Missing
 from sqlite3 import IntegrityError
 from datetime import date
 
-# Create weightlifting table if one does not already exist
+# weightlifting table
 with get_db() as conn:
     curs = conn.cursor()
     curs.execute(
@@ -19,10 +19,7 @@ with get_db() as conn:
         )
     """
     )
-
-# Create exercises table if one does not already exist
-with get_db() as conn:
-    curs = conn.cursor()
+# exercises table
     curs.execute(
         """
         CREATE TABLE IF NOT EXISTS weightlifting_exercises(
@@ -39,18 +36,12 @@ with get_db() as conn:
     """
     )
 
-# Convert a row of the weightlifting table to a Weightlifting object.
 def row_to_model(row: tuple, user_name: str) -> Weightlifting:
     return get_one_weightlifting_session(row[0], user_name)
 
-# Convert the info in the input Weightlifting object into a dictionary
 def model_to_dict(weightlifting: Weightlifting) -> dict:
     return weightlifting.model_dump()
 
-# Select the activity_id in each row in the weightlifting table
-# where the username matches the input username. Use the selected 
-# activity_id's and the input username to construct Weightlifting objects
-# and return a list of the objects.
 def get_all_weightlifting_sessions(user_name: str) -> list[Weightlifting]:
     qry = """
         SELECT activity_id 
@@ -61,10 +52,6 @@ def get_all_weightlifting_sessions(user_name: str) -> list[Weightlifting]:
     rows = execute_qry(qry, params)
     return [row_to_model(row, user_name) for row in rows]
 
-# From the rows of the exercises table where activity_id matches the 
-# input activity_id, select exercise, weight, reps, and sets
-# and use this info to create a WeightliftingExercise object. 
-# Return a list of all the objects. 
 def get_exercises(activity_id: int) -> list[WeightliftingExercise]:
     qry = """
         SELECT 
@@ -87,10 +74,6 @@ def get_exercises(activity_id: int) -> list[WeightliftingExercise]:
     for row in rows
     ]
 
-# Select the activity_id from the weightlifting table where the 
-# activity_id and username matches the input activity_id and username.
-# Use the selected info and username to construct and return a 
-# Weightlifting object.
 def get_one_weightlifting_session(
         activity_id: int, 
         user_name: str
@@ -110,14 +93,6 @@ def get_one_weightlifting_session(
         )
     raise Missing(msg="Weightlifting session does not exist")
 
-# Join the weightlifting table with the activity table where
-# the activity_id matches the activity id. Also join the daily_log table 
-# where the activity daily_log_id matches the daily_log id. 
-# Select the activity_id from the weightlifting table from each row
-# where corresponding daily_log date matches the input date
-# and the username matches the input username. 
-# Use the activity_id and username from each of these rows to 
-# construct a Weightlifting object and return a list of these objects.
 def get_weightlifting_sessions_by_date(
         session_date: date, 
         user_name: str
@@ -136,9 +111,6 @@ def get_weightlifting_sessions_by_date(
     rows = execute_qry(qry, params)
     return [row_to_model(row, user_name) for row in rows]
 
-# Create a row in the weightlifting table using the info in the input
-# Weightlifting object. Also create a row in the exercises table using 
-# the info in the exercises of the input Weightlifting object. 
 def create_weightlifting_session(
         weightlifting_session: Weightlifting, 
         user_name: str
@@ -193,13 +165,6 @@ def create_weightlifting_session(
         user_name
     )
 
-# Update the description and duration of the row in the activity table 
-# where the activity id matches the input WeightliftingUpdate object's activity_id
-# and the username matches the input username. Delete the existing rows in the 
-# exercises table where the activity_id matches the activity_id of the input 
-# WeightliftingUpdate object. Create new rows in the exercise table
-# using the info in the exercise portion of the input WeightliftingUpdate object
-# and the activity_id. 
 def modify_weightlifting_session(
         weightlifting_session: WeightliftingUpdate, 
         user_name: str

@@ -116,6 +116,14 @@
             window.location.href = "/account";
         }
 
+        function viewCalendarYear() {
+            window.location.href = `/calendar`
+        }
+
+        function returnToLogPage() {
+            window.location.href = `/calendar/${activity.log_date}`
+        }
+
         function authHeaders() {
             const token = localStorage.getItem("access_token");
 
@@ -185,14 +193,6 @@
             document.getElementById("seconds").value = duration % 60;
 
             document.getElementById("distance").value = cycle.distance;
-        }
-
-        function viewCalendarYear() {
-            window.location.href = `/calendar`
-        }
-
-        function returnToLogPage() {
-            window.location.href = `/calendar/${activity.log_date}`
         }
 
         document.getElementById("cycleEntryForm").onsubmit = async function (e) {

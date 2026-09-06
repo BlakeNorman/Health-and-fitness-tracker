@@ -122,6 +122,14 @@
         window.location.href = "/account";
     }
 
+    function viewCalendarYear() {
+        window.location.href = `/calendar`
+    }
+
+    function returnToLogPage() {
+        window.location.href = `/calendar/${activity.log_date}`
+    }
+
     function authHeaders() {
         const token = localStorage.getItem("access_token");
 
@@ -199,14 +207,6 @@
             );
         });
 
-    }
-
-    function viewCalendarYear() {
-        window.location.href = `/calendar`
-    }
-
-    function returnToLogPage() {
-        window.location.href = `/calendar/${activity.log_date}`
     }
 
     function addExercise(

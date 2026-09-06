@@ -29,11 +29,11 @@ def get_current_user(token: str = Depends(oauth2_dep)) -> User:
         )
     return user
 
+# Authenticate user, then return JWT access token
 @router.post("/token")
 async def create_access_token(
         form_data: OAuth2PasswordRequestForm = Depends()
     ):
-    """Authenticate user, then return JWT access token"""
     user = user_service.auth_user(form_data.username, form_data.password)
     if user is None:
         raise_unauthed()
@@ -44,9 +44,9 @@ async def create_access_token(
     )
     return {"access_token": access_token, "token_type": "bearer"}
 
+# Return the current access token
 @router.get("/token")
 def get_access_token(token: str = Depends(oauth2_dep)) -> dict:
-    """Return the current access token"""
     return {"token": token}
 
 @router.post("/register")

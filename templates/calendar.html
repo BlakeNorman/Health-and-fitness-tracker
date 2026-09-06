@@ -11,8 +11,6 @@
 
 <body class="calendar-page">
 
-    <!--Calendar-->
-
     <div class="page">
 
         <div class="page-header">
@@ -106,6 +104,10 @@
             window.location.href = `/calendar/${this.value}`;
         };
 
+        function dataVisualizations() {
+            window.location.href = `/data-visualizations`
+        }
+
         function authHeaders() {
             const token = localStorage.getItem("access_token");
 
@@ -117,10 +119,6 @@
             return {
                 "Authorization": `Bearer ${token}`
             };
-        }
-
-        function dataVisualizations() {
-            window.location.href = `/data-visualizations`
         }
 
         // Calendar
@@ -248,6 +246,7 @@
         }
 
         loadYearView();
+
     </script>
 
 </body>

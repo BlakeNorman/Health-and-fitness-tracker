@@ -85,16 +85,10 @@
 
     <script>
 
-        // document = current html page
-        // .getElementById("registerForm") = find the element in the html with id = "registerForm"
-        // .onsubmit = when the user submits, initiate the following function
-        // async allows the use of await inside the function
-        // function (e) - e is short for event which in this case is the submission of the form
         document.getElementById("registerForm").onsubmit = async function (e) {
 
             e.preventDefault();
 
-            // .trim() removes any whitespace from the beginning and end of the string typed by the user
             const email = document.getElementById("email").value;
 
             const username = document.getElementById("username").value.trim();

@@ -6,7 +6,6 @@ from data.daily_log import delete_if_empty
 from sqlite3 import IntegrityError
 from datetime import date
 
-# Create the activity table unless it already exists
 with get_db() as conn:
     curs = conn.cursor()
     curs.execute(
@@ -25,8 +24,6 @@ with get_db() as conn:
     """
     )
 
-# Convert information in a row of the activity table join the daily_log table
-# into an Activity object
 def row_to_model(row: tuple) -> Activity:
     return Activity(
         id=row[0],
@@ -37,15 +34,9 @@ def row_to_model(row: tuple) -> Activity:
         log_date=row[6]
         )
 
-# Convert an Activity or ActivityUpdate object into a dictionary
 def model_to_dict(activity: Activity | ActivityUpdate) -> dict:
     return activity.model_dump()
 
-# Join the activity and daily log tables by activity.daily_log_id = daily_log.id.
-# Then grab the information in all columns of the activity table 
-# and the date from the daily_log table.
-# Using the gathered information, construct an Activity object.
-# Return a list consisting of all constructed Activity objects.
 def get_all_activities(user_name: str) -> list[Activity]:
     qry = """
         SELECT 
@@ -60,10 +51,6 @@ def get_all_activities(user_name: str) -> list[Activity]:
     rows = execute_qry(qry, params)
     return [row_to_model(row) for row in rows]
 
-# Join the activity and daily log tables by activity.daily_log_id = daily_log.id.
-# Then grab the information in all columns of the activity table 
-# and the date from the daily_log table where activity.id = (the input id).
-# Using the gathered information, construct and return an Activity object.
 def get_one_activity(id: int, user_name: str) -> Activity:
     qry = """
         SELECT 
@@ -81,11 +68,6 @@ def get_one_activity(id: int, user_name: str) -> Activity:
         return row_to_model(row)
     raise Missing(msg=f"Activity {id} does not exist")
 
-# Join the activity and daily log tables by avticity.daily_log_id = daily_log.id.
-# Then grab the information in all columns of the activity table 
-# and the date from the daily_log table where daily_log.date = (the input date).
-# Using the gathered information, construct an Activity object.
-# Return a list consisting of all constructed Activity objects.
 def get_activities_by_date(
         activity_date: date, 
         user_name: str
@@ -104,8 +86,6 @@ def get_activities_by_date(
     rows = execute_qry(qry, params)
     return [row_to_model(row) for row in rows]
 
-# Take in an Activity or ActivityIn object and use the information in the object
-# to create a new row of the activity table.
 def create_activity(
         activity: Activity | ActivityIn, 
         user_name: str
@@ -139,8 +119,6 @@ def create_activity(
         raise Duplicate(msg=f"Activity already exists")
     return get_one_activity(id, user_name)
 
-# Update the description and duration of the row in the activity table whose
-# id matches the id in the provided ActivityUpdate object
 def modify_activity(
         activity: ActivityUpdate, 
         user_name: str
@@ -164,8 +142,6 @@ def modify_activity(
             return get_one_activity(activity.id, user_name)
     raise Missing(msg=f"Activity {activity.id} does not exist")
 
-# First check that the activity table has a row containing the input id.
-# Then delete the row of the activity table which has the input id. 
 def delete_activity(id: int, user_name: str) -> None:
     qry = """
         SELECT daily_log_id 
@@ -195,8 +171,6 @@ def delete_activity(id: int, user_name: str) -> None:
 # Graph Functions
 ##################################################
 
-# Join the activity and daily_log tables by activity.daily_log_id = daily_log.id.
-# Return a list of rows consisting of date, duration, category. 
 def get_all_durations(user_name: str):
     qry = """
         SELECT 
@@ -212,10 +186,6 @@ def get_all_durations(user_name: str):
     params = {"user_name": user_name}
     return execute_qry(qry, params)
 
-# Join the activity, daily_log, running, walking, and cycling tables by 
-# activity.daily_log_id = daily_log.id and run/walk/cycle.activity_id = activity.id.
-# Return the date, category, and distance from each activity where the 
-# distance is chosen from the appropiate table based on the activity category.
 def get_all_distances(user_name: str):
     qry = """
         SELECT
@@ -241,10 +211,6 @@ def get_all_distances(user_name: str):
     params = {"user_name": user_name}
     return execute_qry(qry, params)
 
-# Join the activity, daily_log, running, walking, and cycling tables by 
-# activity.daily_log_id = daily_log.id and run/walk/cycle.activity_id = activity.id.
-# Return the date, category, distance, and duration from each activity where the 
-# distance is chosen from the appropiate table based on the activity category.
 def get_all_pace_data(user_name: str):
     qry = """
         SELECT

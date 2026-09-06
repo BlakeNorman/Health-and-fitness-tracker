@@ -248,6 +248,14 @@
             window.location.href = "/account";
         }
 
+        function viewCalendarYear() {
+            window.location.href = `/calendar`
+        }
+
+        function returnToLogPage() {
+            window.location.href = `/calendar/${log_date}`
+        }
+
         function authHeaders() {
             const token = localStorage.getItem("access_token");
 
@@ -274,14 +282,6 @@
         datePicker.onchange = function () {
             window.location.href = `/create-health-log/${this.value}`;
         };
-
-        function viewCalendarYear() {
-            window.location.href = `/calendar`
-        }
-
-        function returnToLogPage() {
-            window.location.href = `/calendar/${log_date}`
-        }
 
         function addFood() {
 
@@ -492,24 +492,18 @@
                 headers: authHeaders(),
 
                 body: JSON.stringify({
-
                     log_date: log_date,
                     notes: notes,
-
                     nutrition_calculation: nutritionCalculation,
-
                     calories: calories,
                     fats: fats,
                     carbs: carbs,
                     protein: protein,
-
                     water: water,
                     weight: weight,
                     bedtime: bedtime,
                     wake_time: wakeTime,
-
                     foods: foods
-
                 })
 
             });
@@ -521,6 +515,7 @@
                 alert(error.detail || "Could not create health log.");
             }
         }
+
     </script>
 
 </body>

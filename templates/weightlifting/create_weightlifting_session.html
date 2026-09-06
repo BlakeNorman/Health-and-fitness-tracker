@@ -132,20 +132,6 @@
             window.location.href = "/account";
         }
 
-        function authHeaders() {
-            const token = localStorage.getItem("access_token");
-
-            if (!token) {
-                window.location.href = "/";
-                return {};
-            }
-
-            return {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json"
-            };
-        }
-
         const log_date = window.location.pathname.split("/").pop();
 
         const datePicker = document.getElementById("datePicker");
@@ -169,6 +155,20 @@
 
         function returnToCategorySelection() {
             window.location.href = `/create-activity/${log_date}`
+        }
+
+        function authHeaders() {
+            const token = localStorage.getItem("access_token");
+
+            if (!token) {
+                window.location.href = "/";
+                return {};
+            }
+
+            return {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            };
         }
 
         function addExercise() {
@@ -269,6 +269,7 @@
                 alert(error.detail || "Could not create activity.");
             }
         }
+
     </script>
 
 </body>

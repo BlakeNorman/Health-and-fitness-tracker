@@ -47,22 +47,19 @@ def create_weightlifting_session(
             DailyLogIn(date=weightlifting_session.log_date), 
             user_name
         )
-
     activity = activity_service.create_activity(
         ActivityIn(
-        daily_log_id=log.id, 
-        category="Weightlifting", 
-        description=weightlifting_session.description,
-        duration=weightlifting_session.duration        
+            daily_log_id=log.id, 
+            category="Weightlifting", 
+            description=weightlifting_session.description,
+            duration=weightlifting_session.duration        
         ),
         user_name
-    ) 
-  
+    )  
     new_weightlifting_session = Weightlifting(
         activity_id=activity.id,
         exercises=weightlifting_session.exercises
-        )
-    
+    )  
     return weightlifting_data.create_weightlifting_session(
         new_weightlifting_session, 
         user_name

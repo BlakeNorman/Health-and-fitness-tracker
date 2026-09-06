@@ -26,23 +26,20 @@ def create_run(run: RunCreate, user_name: str) -> Run:
         log = daily_log_service.create_log(
             DailyLogIn(date=run.log_date), user_name
         )
- 
     activity = activity_service.create_activity(
         ActivityIn(
-        daily_log_id=log.id, 
-        category="Running", 
-        description=run.description, 
-        duration=run.duration
+            daily_log_id=log.id, 
+            category="Running", 
+            description=run.description, 
+            duration=run.duration
         ),
         user_name
     )
-
     new_run = Run(
         activity_id=activity.id,
         distance=run.distance,
         pace=run.pace
-        )
-    
+    )
     return running_data.create_run(new_run, user_name)
 
 def modify_run(run: RunUpdate, user_name: str) -> Run:

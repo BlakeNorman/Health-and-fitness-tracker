@@ -5,9 +5,7 @@ from .init import get_db, execute_qry, execute_qry_one
 from sqlite3 import IntegrityError
 from datetime import datetime
 
-# Create a table to store usernames and associated hashed passwords
-# Also create a table to store usernames and associated hashed passwords 
-# of deleted accounts
+# user table
 with get_db() as conn:
     curs = conn.cursor()
     curs.execute(
@@ -19,6 +17,7 @@ with get_db() as conn:
         )
     """
     )
+# xuser table
     curs.execute(
         """
         CREATE TABLE IF NOT EXISTS xuser(
@@ -29,6 +28,7 @@ with get_db() as conn:
         )
     """
     )
+# password_reset table
     curs.execute(
         """
         CREATE TABLE IF NOT EXISTS password_reset(
@@ -41,8 +41,6 @@ with get_db() as conn:
     """
     )
 
-# Get the information stored in a row of the user table 
-# and use that to create a user object
 def row_to_model(row: tuple) -> User:
     return User(
         name=row[0], 
@@ -50,13 +48,9 @@ def row_to_model(row: tuple) -> User:
         password_hash=row[2]
     )
 
-# Take in a user object and convert the user information 
-# to a dictionary
 def model_to_dict(user: User) -> dict:
     return user.model_dump()
 
-# Get the information stored in a row of the user table, 
-# use that information to create a user object, and return the user object
 def get_one(name: str) -> User:
     qry = """
         SELECT * FROM user WHERE name=:name
@@ -68,8 +62,6 @@ def get_one(name: str) -> User:
     else:
         raise Missing(msg=f"User {name} not found")
 
-# For each row in the user table, create a user object, 
-# then return all user objects
 def get_all() -> list[User]:
     qry = """
         SELECT * FROM user
@@ -77,10 +69,7 @@ def get_all() -> list[User]:
     rows = execute_qry(qry)
     return [row_to_model(row) for row in rows]
 
-# Take in a user object and store the information in the 
-# user object in the user table
 def create(user: User) -> User:
-    """Add <user> to user table"""
     qry = """
         INSERT INTO user(
             name, 
@@ -102,35 +91,6 @@ def create(user: User) -> User:
         raise Duplicate(msg=f"User {user.name} already exists")
     return get_one(user.name)
 
-# Take in an existing name and change the row in the user table 
-# associated to that name so that is has the name 
-# and hashed password associated with the input user object
-def modify(name: str, user: User) -> User:
-    qry = """
-        UPDATE user 
-        SET 
-            name=:name, 
-            email=:email,
-            password_hash=:password_hash
-        WHERE name=:name0
-    """
-    params = {
-        "name": user.name,
-        "email": user.email,
-        "password_hash": user.password_hash,
-        "name0": name
-    }
-    try:
-        with get_db() as conn:
-            curs = conn.cursor()
-            curs.execute(qry, params)
-    except IntegrityError:
-        raise Duplicate(msg=f"User {user.name} already exists")
-    if curs.rowcount == 1:
-        return get_one(user.name)
-    else:
-        raise Missing(msg=f"User {name} not found")
-
 def modify_password(new_password_hash: str, user: User) -> User:
     qry = """
         UPDATE user
@@ -150,8 +110,8 @@ def modify_password(new_password_hash: str, user: User) -> User:
     else:
         raise Missing(msg=f"User {user.name} not found")
 
+# Delete user from user table and add to xuser table
 def delete(name: str) -> None:
-    """Delete user with <name> from user table, add to xuser table"""
     user = get_one(name)
     qry = """
         DELETE FROM user 

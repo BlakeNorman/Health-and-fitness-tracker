@@ -26,23 +26,20 @@ def create_walk(walk: WalkCreate, user_name: str) -> Walk:
         log = daily_log_service.create_log(
             DailyLogIn(date=walk.log_date), user_name
         )
- 
     activity = activity_service.create_activity(
         ActivityIn(
-        daily_log_id=log.id, 
-        category="Walking", 
-        description=walk.description, 
-        duration=walk.duration
+            daily_log_id=log.id, 
+            category="Walking", 
+            description=walk.description, 
+            duration=walk.duration
         ),
         user_name
     )
-
     new_walk = Walk(
         activity_id=activity.id,
         distance=walk.distance,
         pace=walk.pace
-        )
-    
+    )
     return walking_data.create_walk(new_walk, user_name)
 
 def modify_walk(walk: WalkUpdate, user_name: str) -> Walk:

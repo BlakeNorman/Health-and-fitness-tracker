@@ -16,16 +16,15 @@ SECRET_KEY = os.environ["SECRET_KEY"]
 ALGORITHM = "HS256"
 password_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
+# Hash plain and compare with hash from database
 def verify_password(plain: str, hash: str) -> bool:
-    """Hash <plain> and compare with <hash> from database"""
     return password_context.verify(plain, hash)
 
+# Hash a plain string
 def get_hash(plain: str) -> str:
-    """Return the hash of a <plain> string"""
     return password_context.hash(plain)
 
 def get_jwt_username(token: str) -> str | None:
-    """Return username from JWT access <token>"""
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         if not (username := payload.get("sub")):
@@ -35,21 +34,19 @@ def get_jwt_username(token: str) -> str | None:
     return username
 
 def lookup_user(username: str) -> User | None:
-    """Return a matching User from the database for <name>"""
     try:
         return user_data.get_one(username)
     except Missing:
         return None
 
 def get_current_user(token: str) -> User | None:
-    """Decode an OAuth access <token> and return the User"""
     username = get_jwt_username(token)
     if username is None:
         return None
     return lookup_user(username)
 
+# Authenticate user
 def auth_user(name: str, plain: str) -> User | None:
-    """Authenticate user <name> and <plain> password"""
     user = lookup_user(name)
     if user is None:
         return None
@@ -58,7 +55,6 @@ def auth_user(name: str, plain: str) -> User | None:
     return user
 
 def create_access_token(payload: dict, expires: timedelta | None = None):
-    """Return a JWT access token"""
     claims = payload.copy()
     now = datetime.now(timezone.utc)
     if not expires:
@@ -117,7 +113,7 @@ def reset_password(token: str, new_password: str) -> User:
     return user
 
 ###########################################################
-# CRUD passthrough stuff
+# Passthrough stuff
 ###########################################################
 
 def get_all() ->list[User]:

@@ -26,23 +26,20 @@ def create_cycle(cycle: CycleCreate, user_name: str) -> Cycle:
         log = daily_log_service.create_log(
             DailyLogIn(date=cycle.log_date), user_name
         )
- 
     activity = activity_service.create_activity(
         ActivityIn(
-        daily_log_id=log.id, 
-        category="Cycling", 
-        description=cycle.description, 
-        duration=cycle.duration
+            daily_log_id=log.id, 
+            category="Cycling", 
+            description=cycle.description, 
+            duration=cycle.duration
         ),
         user_name
     )
-
     new_cycle = Cycle(
         activity_id=activity.id,
         distance=cycle.distance,
         pace=cycle.pace
-        )
-    
+    )
     return cycling_data.create_cycle(new_cycle, user_name)
 
 def modify_cycle(cycle: CycleUpdate, user_name: str) -> Cycle:

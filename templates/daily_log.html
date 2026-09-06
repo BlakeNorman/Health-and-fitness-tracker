@@ -86,8 +86,9 @@
 
     <script>
 
-        // Remove the item labeled "access_token" from 
-        // the user's browser and navigate to the login page
+        document.getElementById("dateTitle").textContent =
+            `Daily Log For ${date}`;
+
         function logout() {
             localStorage.removeItem("access_token");
             window.location.href = "/";
@@ -97,10 +98,32 @@
             window.location.href = "/account";
         }
 
-        // Set token equal to the item labeled "access_token" stored in the browser
-        // If token is None, redirect to the login page and return headers as empty
-        // Otherwise, return the header "Authorization": `Bearer ${token}` which tells
-        // the server the credential provided is a bearer access token
+        const date = window.location.pathname.split("/").pop();
+
+        const datePicker = document.getElementById("datePicker");
+
+        datePicker.value = date;
+
+        datePicker.onchange = function () {
+            window.location.href = `/calendar/${this.value}`;
+        };
+
+        function viewCalendarYear() {
+            window.location.href = `/calendar`
+        }
+
+        function dataVisualizations() {
+            window.location.href = `/data-visualizations`
+        }
+
+        function createActivity() {
+            window.location.href = `/create-activity/${date}`;
+        }
+
+        function createHealthLog() {
+            window.location.href = `/create-health-log/${date}`;
+        }
+
         function authHeaders() {
             const token = localStorage.getItem("access_token");
 
@@ -114,89 +137,39 @@
             };
         }
 
-        // Take the path, split it into pieces by /, then set det equal
-        // to the last piece
-        const date = window.location.pathname.split("/").pop();
-
-        const datePicker = document.getElementById("datePicker");
-
-        // Set the default date in the date picker to the 'date' variable
-        datePicker.value = date;
-
-        // When the date is changed on the datePicker object, run this function
-        // The function redirects 
-        // this.value is the value stored in the datePicker variable
-        datePicker.onchange = function () {
-            window.location.href = `/calendar/${this.value}`;
-        };
-
-        // redirect to the calendar page
-        function viewCalendarYear() {
-            window.location.href = `/calendar`
-        }
-
-        // redirect to the data visualization page
-        function dataVisualizations() {
-            window.location.href = `/data-visualizations`
-        }
-
-        // Set the title of the page
-        document.getElementById("dateTitle").textContent =
-            `Daily Log For ${date}`;
-
-        // async function allows use of await inside the function
         async function loadActivities() {
 
-            // Send a request to the function which requires activity_date
-            // and verification of the current user
-            // If user is authorized, set response equal to the received response
             const response = await fetch(`/activity/date/${date}`, {
                 headers: authHeaders()
             });
 
-            // Set list equal to the html object with id "activities"
             const list = document.getElementById("activities");
 
-            // Remove all html from within list
             list.innerHTML = "";
 
-            // If user is authorized, but there is a problem with response, 
-            // set the html of list as could not load activities
             if (!response.ok) {
                 list.innerHTML = `<p>Could not load activities.</p>`;
                 return;
             }
 
-            // If response has no problems, set activities equal to the
-            // jsonified version of response
             const activities = await response.json();
 
-            // If activities does not contain anything, set the html in list
-            // to no activities logged on this day
             if (activities.length === 0) {
                 list.innerHTML = `<p>No activities logged on this day.</p>`;
                 return;
             }
 
-            // For each activity in activities, do the following...
             for (const activity of activities) {
 
-                // Set details to be an empty string
                 let details = "";
 
-                // If the activity category is running, send a request to 
-                // /running/${activity.id} and set response equal to the request
-                // response.  
                 if (activity.category === "Running") {
                     const response = await fetch(`/running/${activity.id}`, {
                         headers: authHeaders()
                     });
 
-                    // If the user is authorized, then set run equal to the 
-                    // jsonified version of response
                     const run = await response.json();
 
-                    // Replace the empty string details with the following:
                     details = `
                     <p><strong>Distance:</strong> ${run.distance} miles</p>
                     <p><strong>Pace:</strong> ${formatTime(run.pace)} / mile</p>
@@ -239,11 +212,6 @@
 
                     const session = await response.json();
 
-                    // <h4> is a level 4 header (4th largest heading size)
-                    // <ul> creates an unordered list (bulleted list)
-                    // <li> sets a list item (puts a bullet in front of the item within)
-                    // map creates an array
-                    // .join joins all elements of the array into a single string
                     details = `
                     <h4>Exercises</h4>
                     <ul>
@@ -260,10 +228,6 @@
                 `;
                 }
 
-                // Math.floor rounds down to the nearest integer
-                // a % b gives the remainder when a is divided by b
-                // .padstart makes the string have 2 characters starting 
-                // with 0 if there is only one character to begin with. 
                 function formatTime(totalSeconds) {
                     const hours = Math.floor(totalSeconds / 3600);
                     const minutes = Math.floor((totalSeconds % 3600) / 60)
@@ -272,10 +236,8 @@
                     return `${hours}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
                 }
 
-                // Create a div element and store it in the variable card
                 const card = document.createElement("div");
 
-                // This defines the html within the div object card
                 card.innerHTML = `
                 <h3>${activity.category}</h3>
 
@@ -300,22 +262,10 @@
                 </button>
             `;
 
-                // append the div card to the end of the list object
                 list.appendChild(card);
             }
         }
 
-        // If bedtime or waketime is not provided, return null
-        // Create a variable array [bedtimeHour, bedtimeMinute] 
-        // which is equal to an array whose entries are the bedtime hour
-        // and bedtime minute. Do the same for wake hour and wake minute.
-        // Create a variable bedtimeMinutes which is number of minutes into 
-        // the day when bedtime occured. Do the same for wakeMinutes.
-        // If wake time was the day after bedtime, then add 24 hours 
-        // worth of minutes to wakeMinutes. 
-        // Coumpute the total number of minutes asleep and store 
-        // as the variable duration.
-        // Convert the number of minutes asleep to number of hours and minutes. 
         function calculateSleepLength(bedtime, wakeTime) {
             if (!bedtime || !wakeTime) {
                 return null;
@@ -339,15 +289,6 @@
             return `${hours} hr ${minutes} min`;
         }
 
-        // If timeString is null, return "no data entered".
-        // Create an array of variables where the entries are 
-        // the hours and minutes from timeString.
-        // If hour is greater than or equal to 12, then set period to PM,
-        // otherwise, set it as AM. 
-        // Set hour12 to be the reaminder of hours divided by 12, but if
-        // this gives 0, then set hour12 to be 12. 
-        // Return hour12:minute period, where if minute does not have 2 
-        // characters, then add 0 to the beginning of it until it is 2 characters.
         function formatTime(timeString) {
             if (!timeString) {
                 return "No data entered";
@@ -363,13 +304,10 @@
 
         async function loadHealth() {
 
-            // Send a request to /health/date/${date} using the default method: GET
-            // with authorization headers: authHeaders()
             const response = await fetch(`/health/date/${date}`, {
                 headers: authHeaders()
             });
 
-            // The variable container will hold all of the health log information
             const container = document.getElementById("health");
 
             container.innerHTML = "";
@@ -385,11 +323,6 @@
 
             const card = document.createElement("div");
 
-            // health.foods?.length means if health.foods exists, calculate its length,
-            // and if not, give undefined. 
-            // health.foods?.length > 0 ? if health.foods exists, 
-            // is the length of health.foods > 0? If yes, do the following, 
-            // if not, then do the stuff after the colon.
             card.innerHTML = `
 
             <p>
@@ -470,42 +403,6 @@
 
         loadHealth();
 
-        // Redirect to / (Calendar page)
-        function changeDate() {
-
-            window.location.href = "/calendar";
-
-        }
-
-        // Redirect to /create-activity/${date} 
-        function createActivity() {
-
-            window.location.href =
-                `/create-activity/${date}`;
-
-        }
-
-        // Redirect to /create-health-log/${date}
-        function createHealthLog() {
-
-            window.location.href =
-                `/create-health-log/${date}`;
-
-        }
-
-        // async allows the use of await inside the function.
-        // Function takes in an activity id.
-        // Confirmed is a variable equal to the choice a user makes.
-        // confirm() sends a message to the user and allows input
-        // either cancel or ok. 
-        // If the user chooses cancel, then end the function. 
-        // Otherwise, send a request to /activity/${id} for 
-        // a delete method with headers authHeaders()
-        // If the response from the request has no errors, 
-        // initiate the loadActivities function.
-        // Otherwise, set error to be equal to the jsonified response
-        // and alert the user with either the error detail, or 
-        // if there is no error detail, "Could not delete activity"
         async function deleteActivity(id) {
 
             const confirmed = confirm("Delete this activity?");
@@ -531,7 +428,6 @@
 
         }
 
-        // Similar to deleteActivity, but for a health log
         async function deleteHealthLog(id) {
 
             const confirmed = confirm("Delete this health log?");
@@ -559,7 +455,6 @@
 
         }
 
-        // Redirect to /edit-activity/${category.toLowerCase()}/${id}
         function editActivity(id, category) {
 
             window.location.href =
@@ -567,7 +462,6 @@
 
         }
 
-        // Redirect to /edit-health-log/${id}
         function editHealthLog(id) {
 
             window.location.href =

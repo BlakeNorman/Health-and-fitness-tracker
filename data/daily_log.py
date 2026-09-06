@@ -5,7 +5,6 @@ from models.errors import Duplicate, Missing
 from sqlite3 import IntegrityError
 from datetime import date
 
-# Create a daily log table in the database
 with get_db() as conn:
     curs = conn.cursor()
     curs.execute(
@@ -21,21 +20,15 @@ with get_db() as conn:
     """
     )
 
-# Convert a row in the daily log table into a DailyLog object
 def row_to_model(row: tuple) -> DailyLog:
     return DailyLog(
         id=row[0],
         date=row[2]
     )
 
-# Convert the information stored in a DailyLog object into a dictionary
 def model_to_dict(log: DailyLog) -> dict:
     return log.model_dump()
 
-# Select all information in each row of the daily log table 
-# where the username is the input username
-# convert each row into a DailyLog object and return a list of all 
-# these DailyLog objects
 def get_all_logs(user_name: str) -> list[DailyLog]:
     qry = """
         SELECT * FROM daily_log
@@ -45,8 +38,6 @@ def get_all_logs(user_name: str) -> list[DailyLog]:
     rows = execute_qry(qry, params) 
     return [row_to_model(row) for row in rows]
 
-# Find the row in the daily log table which has the input id and username
-# convert the info in that row to a DailyLog object and return that object
 def get_one_log(id: int, user_name: str) -> DailyLog:
     qry = """
         SELECT * FROM daily_log 
@@ -59,8 +50,6 @@ def get_one_log(id: int, user_name: str) -> DailyLog:
         return row_to_model(row)
     raise Missing(msg=f"Log {id} does not exist")
 
-# Find the row in the daily log table which has the input log date and username
-# convert that row to a DailyLog object and return that object
 def get_log_by_date(log_date: date, user_name: str) -> DailyLog:
     qry = """
         SELECT * FROM daily_log 
@@ -73,8 +62,6 @@ def get_log_by_date(log_date: date, user_name: str) -> DailyLog:
         return row_to_model(row)
     raise Missing(msg=f"Log on {log_date} does not exist")
 
-# Create a row in the daily log table using the date from the 
-# input DailyLogIn object and input username (id is automatically generated)
 def create_log(log: DailyLogIn, user_name: str) -> DailyLog:
     if not log:
         raise ValueError("Log cannot be empty")
@@ -99,9 +86,6 @@ def create_log(log: DailyLogIn, user_name: str) -> DailyLog:
         raise Duplicate(msg=f"Log {log.date} already exists")
     return get_one_log(id, user_name)
 
-# Find the row in the daily log table which has the id in the 
-# input DailyLog object and also has the input username
-# change the date in this row to the date in the DailyLog object
 def modify_log(log: DailyLog, user_name: str) -> DailyLog:
     if not log:
         raise ValueError("Log cannot be empty")
@@ -120,7 +104,6 @@ def modify_log(log: DailyLog, user_name: str) -> DailyLog:
             return get_one_log(log.id, user_name)
     raise Missing(msg=f"Log {log.id} does not exist")
 
-# Delete the row in the daily log table with the input id and username
 def delete_log(id: int, user_name: str) -> None:
     qry = """
         DELETE FROM daily_log 
@@ -135,9 +118,7 @@ def delete_log(id: int, user_name: str) -> None:
         if curs.rowcount != 1:
             raise Missing(msg=f"Log {id} does not exist")
 
-# Check if a row exists in the health table and activity table with the 
-# input daily log id and if not, then delete the row in 
-# the daily log table with daily log id and username
+# Delete daily log row if no corresponding health or activity logs exist
 def delete_if_empty(daily_log_id: int, user_name: str) -> None:
     qry = """
         SELECT 

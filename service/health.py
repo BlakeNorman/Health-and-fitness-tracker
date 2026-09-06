@@ -17,11 +17,6 @@ def get_one_health_log(id: int, user_name: str) -> Health:
 def get_health_log_by_date(log_date: date, user_name: str) -> Health:
     return health_data.get_health_log_by_date(log_date, user_name)
 
-# Either set log equal to the already existing daily log or make log equal to a 
-# new daily log on the date stored in the HealthCreate object. 
-# Calculate calorie and macro totals using the method chosen by the user.
-# Create a new Health object using the information stored in the HealthCreate
-# object and the calculated calorie and macro totals. 
 def create_health_log(health_log: HealthCreate, user_name: str) -> Health:
     try:
         log = daily_log_service.get_log_by_date(health_log.log_date, user_name)
@@ -30,37 +25,24 @@ def create_health_log(health_log: HealthCreate, user_name: str) -> Health:
             DailyLogIn(date=health_log.log_date), 
             user_name
         )
-
     calorie_and_macro_totals = calculate_calorie_and_macro_totals(health_log)
-  
     new_health_log = Health(
         daily_log_id=log.id,
         log_date=health_log.log_date,
         notes=health_log.notes,
-
         nutrition_calculation=health_log.nutrition_calculation,
-
         calories=calorie_and_macro_totals["calories"],
         fats=calorie_and_macro_totals["fats"],
         carbs=calorie_and_macro_totals["carbs"],
         protein=calorie_and_macro_totals["protein"],
-
         water=health_log.water,
         weight=health_log.weight,
         bedtime=health_log.bedtime,
         wake_time=health_log.wake_time,
-
         foods=health_log.foods
-        )
-    
+    )
     return health_data.create_health_log(new_health_log, user_name)
 
-# Create a Health object from the existing information in the health table with the input
-# id and username. If the HealthUpdate object contains a nutrition_calculation selection
-# then use that, otherwise, use the already chosen nutrition_calculation in the Health object.
-# If the user has provided foods, then use the provided foods, otherwise, use the 
-# already existing foods. Calculate the calorie and macro totals based on the 
-# nutrition calculation method. 
 def modify_health_log(
         id: int, 
         health_log: HealthUpdate, 
@@ -71,7 +53,7 @@ def modify_health_log(
         health_log.nutrition_calculation 
         if health_log.nutrition_calculation is not None 
         else existing.nutrition_calculation
-        )
+    )
     foods = (
         health_log.foods if health_log.foods is not None else existing.foods
     )
@@ -129,10 +111,6 @@ def calculate_calorie_and_macro_totals(
 # Health Graphs Functions
 #################################################
 
-# Each row of rows contains a date and corresponding health parameter value.
-# data is a list where each entry is a dictionary associating "date" with the date
-# and the input parameter with its value. We either return all data, the data in the 
-# selected year, or the data in the selected month.
 def get_health_parameter(
         user_name: str, 
         parameter: str, 
@@ -157,10 +135,6 @@ def get_health_parameter(
         ]
     return data
 
-# Each row of rows contains a date and corresponding fats, carbs, and protein values.
-# data is a list where each entry is a dictionary associating "date" with the date
-# and macro with its value. We either return all data, the data in the 
-# selected year, or the data in the selected month.
 def get_macros(
         user_name: str, 
         range: str = "all", 
@@ -186,10 +160,6 @@ def get_macros(
         ]
     return data
 
-# Each row of rows contains a date and corresponding bedtime and wake_time values.
-# data is a list where each entry is a dictionary associating "date" with the date
-# and bedtime/wake_time with its value. We either return all data, the data in the 
-# selected year, or the data in the selected month.
 def get_sleep_data(
         user_name: str, 
         range: str = "all", 

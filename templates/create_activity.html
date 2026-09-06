@@ -83,6 +83,9 @@
             window.location.href = "/";
         }
 
+        document.getElementById("createActivityTitle").textContent =
+            `Create Activity For ${activityDate}`;
+
         function logout() {
             localStorage.removeItem("access_token");
             window.location.href = "/";
@@ -93,9 +96,6 @@
         }
 
         const activityDate = window.location.pathname.split("/").pop();
-
-        document.getElementById("createActivityTitle").textContent =
-            `Create Activity For ${activityDate}`;
 
         const datePicker = document.getElementById("datePicker");
 
