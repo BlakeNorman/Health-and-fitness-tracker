@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Edit Weightlifting Session</title>
+
+    <link rel="stylesheet" href="/static/style.css">
+
+</head>
+
+<body class="modify-page">
+
+    <div class="page">
+
+        <div class="page-header">
+
+            <h1 id="modifyWeightliftingSessionTitle"></h1>
+
+            <button type="button" class="logout-button" onclick="logout()">
+                Log Out
+            </button>
+
+            <button type="button" class="account-button" onclick="account()">
+                Account
+            </button>
+
+            <div class="date-controls">
+
+                <div class="date-row">
+
+                    <button type="Button" onclick="viewCalendarYear()">
+                        View Calendar Year
+                    </button>
+
+                    <button type="Button" onclick="returnToLogPage()">
+                        Return To Daily Log
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <form id="WeightliftingEntryForm">
+
+            <div class="module create-form-module">
+
+                <div class="form-group">
+
+                    <label for="description">
+                        Description
+                    </label>
+
+                    <textarea id="description" placeholder="Description"></textarea>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Duration</label>
+
+                    <div class="duration-inputs">
+
+                        <input id="hours" type="number" min="0" placeholder="hrs">
+
+                        <span>:</span>
+
+                        <input id="minutes" type="number" min="0" max="59" placeholder="mins">
+
+                        <span>:</span>
+
+                        <input id="seconds" type="number" min="0" max="59" placeholder="secs">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="module exercise-module">
+
+                <div class="exercise-section">
+
+                    <h3>Exercises</h3>
+
+                    <div id="exerciseList"></div>
+
+                    <button type="button" class="button-primary" onclick="addExercise()">
+                        Add Exercise
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div class="form-submit">
+
+                <button type="submit">
+                    Save Changes
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</body>
+
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js"></script>
+
+<script>
+
+    function logout() {
+        localStorage.removeItem("access_token");
+        window.location.href = "/";
+    }
+
+    function account() {
+        window.location.href = "/account";
+    }
+
+    function authHeaders() {
+        const token = localStorage.getItem("access_token");
+
+        if (!token) {
+            window.location.href = "/";
+            return {};
+        }
+
+        return {
+            "Authorization": `Bearer ${token}`
+        };
+    }
+
+    const activity_id = window.location.pathname.split("/").pop();
+
+    let activity;
+
+    async function loadWeightliftingSession() {
+
+        const weightliftingResponse = await fetch(`/weightlifting/${activity_id}`, {
+            headers: authHeaders()
+        });
+
+        if (weightliftingResponse.status === 401) {
+            localStorage.removeItem("access_token");
+            window.location.href = "/login";
+            return;
+        }
+
+        if (!weightliftingResponse.ok) {
+            const error = await weightliftingResponse.json();
+            alert(error.detail || "Could not load weightlifting session");
+            return;
+        }
+
+        const weightlifting_session = await weightliftingResponse.json();
+
+        const activityResponse = await fetch(`/activity/${activity_id}`, {
+            headers: authHeaders()
+        });
+
+        if (activityResponse.status === 401) {
+            localStorage.removeItem("access_token");
+            window.location.href = "/login";
+            return;
+        }
+
+        if (!activityResponse.ok) {
+            const error = await activityResponse.json();
+            alert(error.detail || "Could not load activity");
+            return;
+        }
+
+        activity = await activityResponse.json();
+
+        document.getElementById("modifyWeightliftingSessionTitle").textContent =
+            `Edit Weightlifting Session For ${activity.log_date}`;
+
+        document.getElementById("description").value = activity.description || "";
+
+        const duration = activity.duration
+
+        document.getElementById("hours").value = Math.floor(duration / 3600);
+
+        document.getElementById("minutes").value = Math.floor((duration % 3600) / 60);
+
+        document.getElementById("seconds").value = duration % 60;
+
+        weightlifting_session.exercises.forEach(exercise => {
+            addExercise(
+                exercise.exercise,
+                exercise.weight,
+                exercise.reps,
+                exercise.sets
+            );
+        });
+
+    }
+
+    function viewCalendarYear() {
+        window.location.href = `/calendar`
+    }
+
+    function returnToLogPage() {
+        window.location.href = `/calendar/${activity.log_date}`
+    }
+
+    function addExercise(
+        name = "",
+        weight = "",
+        reps = "",
+        sets = ""
+    ) {
+
+        const container = document.getElementById("exerciseList");
+
+        const div = document.createElement("div");
+
+        div.className = "exercise";
+
+        div.innerHTML = `
+            <div class="dragHandle">⠿</div>
+
+            <input class="exerciseName" 
+                    placeholder="Exercise" 
+                    value="${name}"
+                    required>
+
+            <input class="exerciseWeight"
+                    type="number"
+                    step="0.5"
+                    placeholder="Weight (lbs)"
+                    value="${weight}">
+
+            <input class="exerciseReps"
+                    type="number"
+                    placeholder="Reps"
+                    value="${reps}">
+
+            <input class="exerciseSets"
+                    type="number"
+                    placeholder="Sets"
+                    value="${sets}">
+
+            <button type="button" class="button-danger"
+                    onclick="this.parentElement.remove()">
+                Remove
+            </button>
+        `;
+
+        container.appendChild(div)
+
+    }
+
+    new Sortable(document.getElementById("exerciseList"), {
+        animation: 150,
+        handle: ".dragHandle"
+    });
+
+    document.getElementById("WeightliftingEntryForm").onsubmit = async function (e) {
+
+        e.preventDefault();
+
+        const description = document.getElementById("description").value;
+
+        const hours = Number(document.getElementById("hours").value || 0);
+
+        const minutes = Number(document.getElementById("minutes").value || 0);
+
+        const seconds = Number(document.getElementById("seconds").value || 0);
+
+        const duration = hours * 3600 + minutes * 60 + seconds
+
+        const exercises = [];
+
+        document.querySelectorAll(".exercise").forEach(div => {
+
+            exercises.push({
+                exercise: div.querySelector(".exerciseName").value,
+                weight: Number(div.querySelector(".exerciseWeight").value),
+                sets: Number(div.querySelector(".exerciseSets").value),
+                reps: Number(div.querySelector(".exerciseReps").value)
+            });
+
+        });
+
+        const response = await fetch("/weightlifting/", {
+
+            method: "PATCH",
+
+            headers: {
+                "Content-Type": "application/json",
+                ...authHeaders()
+            },
+
+            body: JSON.stringify({
+
+                activity_id: Number(activity_id),
+                description: description,
+                duration: duration,
+                exercises: exercises
+
+            })
+
+        });
+
+        if (response.ok) {
+
+            window.location.href = `/calendar/${activity.log_date}`;
+
+        } else {
+
+            const error = await response.json();
+
+            alert(error.detail || "Could not modify weightlifting session");
+
+        }
+
+    };
+
+    loadWeightliftingSession();
+
+</script>
+
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+    <title>Log In</title>
+
+    <link rel="stylesheet" href="/static/style.css">
+
+</head>
+
+<body class="login-page">
+
+    <div class="page">
+
+        <div class="page-header">
+
+            <h1>Fitness and Health Tracker</h1>
+
+            <h3>Log In</h3>
+
+        </div>
+
+        <div class="module create-form-module">
+
+            <form id="loginForm">
+
+                <div class="form-group">
+
+                    <label for="username">
+                        Username
+                    </label>
+
+                    <input id="username" type="text" placeholder="Username" required>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="password">
+                        Password
+                    </label>
+
+                    <input id="password" type="password" placeholder="Password" required>
+
+                </div>
+
+                <div id="loginError" class="form-help"></div>
+
+                <div class="form-submit">
+
+                    <button type="submit" class="button-primary">
+                        Log In
+                    </button>
+
+                </div>
+
+            </form>
+
+            <div class="form-submit">
+
+                <button type="button" onclick="window.location.href=`/register`">
+                    Create Account
+                </button>
+
+            </div>
+
+            <div class="form-submit">
+
+                <button type="button" class="forgot-password" onclick="window.location.href=`/request-password-reset`">
+                    Forgot Password
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+
+        // document = current html page
+        // getElementById("loginForm") = find the html item whose id is loginForm
+        // .onsubmit = run the function (async function (e)) when the form is submitted
+        // async allows the use of await inside the function
+        // e is short for event object - in this case, the form submission
+        document.getElementById("loginForm").onsubmit = async function (e) {
+
+            // Do not perform the normal form submission, instead handle it with the following JS
+            e.preventDefault();
+
+            // const is used to declare a variable which cannot be reassigned
+            // .value grabs whatever the user typed into that input
+            const username = document.getElementById("username").value;
+
+            const password = document.getElementById("password").value;
+
+            const errorElement = document.getElementById("loginError");
+
+            // This clears any previous error messages
+            errorElement.textContent = "";
+
+            // URLSearchParameters is a JS object which holds key/value pairs in URL-encoded form
+            // Initially, it is an empty contained, then we append key/value pairs to it
+            // It is used here since OAuth2PasswordRequestForm expects something like
+            // username=Name&password=MyPassword123 instead of JSON
+            const formData = new URLSearchParams();
+
+            // Set username and password in formData to whatever the user typed
+            // encoded approximately as username=Name&password=MyPassword123
+            formData.append("username", username);
+            formData.append("password", password);
+
+            // fetch sends an http request - in this case to /user/token
+            // await means to wait for the server to respond before continuing
+            // the http response is stored in the variable 'response'
+            const response = await fetch("/user/token", {
+
+                // tells the server that this is a post request - we are sending data to the server
+                method: "POST",
+
+                // headers tell FastAPI what form the data is in
+                // In this case, the body of the request contains URL-encoded form data
+                // OAuth2PasswordRequestForm expects form-encoded data
+                // /user/token authenticates the user, then returns an access token
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+
+                // Sets the body of the request as the information stored in formData
+                body: formData
+
+            });
+
+            // response.ok is true if the http response indicates success (200)
+            if (response.ok) {
+
+                // response.json() converts the JSON response into a JS object
+                // The JS object is stored in the variable 'data'
+                // await means to wait until the JSON is converted before continuing 
+                const data = await response.json();
+
+                // Store the access token on the user's browser
+                localStorage.setItem("access_token", data.access_token);
+
+                // This tells the browser to navigate to the calendar page
+                window.location.href = "/calendar";
+
+                // if the login fails, then this else statement runs
+            } else {
+
+                // since the login failed, the response contains an error message
+                const error = await response.json();
+
+                // Display the received error message
+                // or if no error message was received, thn display the following text.
+                errorElement.textContent = error.detail || "Invalid username or password";
+
+            }
+
+        };
+
+    </script>
+
+</body>
+
+</html>

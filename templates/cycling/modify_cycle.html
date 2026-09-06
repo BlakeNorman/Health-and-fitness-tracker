@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Edit Cycling Session</title>
+
+    <link rel="stylesheet" href="/static/style.css">
+
+</head>
+
+<body class="modify-page">
+
+    <div class="page">
+
+        <div class="page-header">
+
+            <h1 id="modifyCycleTitle"></h1>
+
+            <button type="button" class="logout-button" onclick="logout()">
+                Log Out
+            </button>
+
+            <button type="button" class="account-button" onclick="account()">
+                Account
+            </button>
+
+            <div class="date-controls">
+
+                <div class="date-row">
+
+                    <button type="Button" onclick="viewCalendarYear()">
+                        View Calendar Year
+                    </button>
+
+                    <button type="Button" onclick="returnToLogPage()">
+                        Return To Daily Log
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <form id="cycleEntryForm">
+
+            <div class="module create-form-module">
+
+                <div class="form-group">
+
+                    <label for="description">
+                        Description
+                    </label>
+
+                    <textarea id="description" placeholder="Description"></textarea>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Duration</label>
+
+                    <div class="duration-inputs">
+
+                        <input id="hours" type="number" min="0" placeholder="hrs">
+
+                        <span>:</span>
+
+                        <input id="minutes" type="number" min="0" max="59" placeholder="mins">
+
+                        <span>:</span>
+
+                        <input id="seconds" type="number" min="0" max="59" placeholder="secs">
+
+                    </div>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="distance">
+                        Distance
+                    </label>
+
+                    <input id="distance" type="number" step="0.01" min="0" placeholder="Distance (miles)">
+
+                    <p>
+                        Pace is calculated from duration and distance.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="form-submit">
+
+                <button type="submit">
+                    Save Changes
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+    <script>
+
+        function logout() {
+            localStorage.removeItem("access_token");
+            window.location.href = "/";
+        }
+
+        function account() {
+            window.location.href = "/account";
+        }
+
+        function authHeaders() {
+            const token = localStorage.getItem("access_token");
+
+            if (!token) {
+                window.location.href = "/";
+                return {};
+            }
+
+            return {
+                "Authorization": `Bearer ${token}`
+            };
+        }
+
+        const activity_id = window.location.pathname.split("/").pop();
+
+        let activity;
+
+        async function loadCycle() {
+
+            const cycleResponse = await fetch(`/cycling/${activity_id}`, {
+                headers: authHeaders()
+            });
+
+            if (cycleResponse.status === 401) {
+                localStorage.removeItem("access_token");
+                window.location.href = "/";
+                return;
+            }
+
+            if (!cycleResponse.ok) {
+                const error = await cycleResponse.json();
+                alert(error.detail || "Could not load cycle");
+                return;
+            }
+
+            const cycle = await cycleResponse.json();
+
+            const activityResponse = await fetch(`/activity/${activity_id}`, {
+                headers: authHeaders()
+            });
+
+            if (activityResponse.status === 401) {
+                localStorage.removeItem("access_token");
+                window.location.href = "/";
+                return;
+            }
+
+            if (!activityResponse.ok) {
+                const error = await activityResponse.json();
+                alert(error.detail || "Could not load activity");
+                return;
+            }
+
+            activity = await activityResponse.json();
+
+            document.getElementById("modifyCycleTitle").textContent =
+                `Edit Cycle For ${activity.log_date}`;
+
+            document.getElementById("description").value = activity.description || "";
+
+            const duration = activity.duration
+
+            document.getElementById("hours").value = Math.floor(duration / 3600);
+
+            document.getElementById("minutes").value = Math.floor((duration % 3600) / 60);
+
+            document.getElementById("seconds").value = duration % 60;
+
+            document.getElementById("distance").value = cycle.distance;
+        }
+
+        function viewCalendarYear() {
+            window.location.href = `/calendar`
+        }
+
+        function returnToLogPage() {
+            window.location.href = `/calendar/${activity.log_date}`
+        }
+
+        document.getElementById("cycleEntryForm").onsubmit = async function (e) {
+
+            e.preventDefault();
+
+            const description = document.getElementById("description").value;
+
+            const hours = Number(document.getElementById("hours").value || 0);
+
+            const minutes = Number(document.getElementById("minutes").value || 0);
+
+            const seconds = Number(document.getElementById("seconds").value || 0);
+
+            const duration = hours * 3600 + minutes * 60 + seconds
+
+            if (duration <= 0) {
+                alert("Enter a valid duration");
+                return;
+            }
+
+            const distance = Number(document.getElementById("distance").value);
+
+            if (distance <= 0) {
+                alert("Enter a valid distance");
+                return;
+            }
+
+            const pace = duration / distance;
+
+            const response = await fetch("/cycling/", {
+
+                method: "PATCH",
+
+                headers: {
+                    "Content-Type": "application/json",
+                    ...authHeaders()
+                },
+
+                body: JSON.stringify({
+
+                    activity_id: Number(activity_id),
+                    description: description,
+                    duration: duration,
+                    distance: distance,
+                    pace: pace
+
+                })
+
+            });
+
+            if (response.ok) {
+
+                window.location.href = `/calendar/${activity.log_date}`;
+
+            } else {
+
+                const error = await response.json();
+
+                alert(error.detail || "Could not modify cycle");
+
+            }
+
+        };
+
+        loadCycle();
+
+    </script>
+
+</body>
+
+</html>

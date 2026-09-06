@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+    <title>Create Account</title>
+    <link rel="stylesheet" href="/static/style.css">
+
+</head>
+
+<body class="register-page">
+
+    <div class="page">
+
+        <div class="page-header">
+            <h1>Create Account</h1>
+        </div>
+
+        <div class="module create-form-module">
+
+            <form id="registerForm">
+
+                <div class="form-group">
+
+                    <label for="email">
+                        Email
+                    </label>
+
+                    <input id="email" type="text" required placeholder="Email">
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="username">
+                        Username
+                    </label>
+
+                    <input id="username" type="text" required placeholder="Username" autocomplete="username">
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="password">
+                        Password
+                    </label>
+
+                    <input id="password" type="password" required placeholder="Password" autocomplete="password">
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="confirmPassword">
+                        Confirm Password
+                    </label>
+
+                    <input id="confirmPassword" type="password" required placeholder="Confirm Password">
+
+                </div>
+
+                <div class="form-submit">
+
+                    <button type="submit" class="button-primary">
+                        Create Account
+                    </button>
+
+                </div>
+
+            </form>
+
+            <div class="form-submit">
+
+                <button type="button" onclick="window.location.href=`/`">
+                    Return to Login Page
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+
+        // document = current html page
+        // .getElementById("registerForm") = find the element in the html with id = "registerForm"
+        // .onsubmit = when the user submits, initiate the following function
+        // async allows the use of await inside the function
+        // function (e) - e is short for event which in this case is the submission of the form
+        document.getElementById("registerForm").onsubmit = async function (e) {
+
+            e.preventDefault();
+
+            // .trim() removes any whitespace from the beginning and end of the string typed by the user
+            const email = document.getElementById("email").value;
+
+            const username = document.getElementById("username").value.trim();
+
+            const password = document.getElementById("password").value;
+
+            const confirmPassword = document.getElementById("confirmPassword").value;
+
+            if (password !== confirmPassword) {
+                alert("Passwords do not match");
+                return;
+            }
+
+            const response = await fetch("/user/register", {
+
+                method: "POST",
+
+                headers: { "Content-Type": "application/json" },
+
+                body: JSON.stringify({ name: username, email: email, password: password })
+
+            });
+
+            if (response.ok) {
+
+                alert("Account created");
+
+                window.location.href = "/";
+
+            } else {
+
+                const error = await response.json();
+
+                alert(error.detail || "Could not create account");
+
+            }
+
+        };
+
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Calendar</title>
+
+    <link rel="stylesheet" href="/static/style.css">
+
+</head>
+
+<body class="calendar-page">
+
+    <!--Calendar-->
+
+    <div class="page">
+
+        <div class="page-header">
+
+            <h1>Calendar</h1>
+
+            <button type="button" class="logout-button" onclick="logout()">
+                Log Out
+            </button>
+
+            <button type="button" class="account-button" onclick="account()">
+                Account
+            </button>
+
+            <div class="date-controls">
+
+                <div class="date-row">
+
+                    <label for="datePicker">
+                        Choose Date:
+                    </label>
+
+                    <input type="date" id="datePicker">
+
+                    <button type="button" onclick="dataVisualizations()">
+                        View Graphs
+                    </button>
+
+                </div>
+
+                <div class="calendar-key">
+
+                    <div>
+
+                        <div class="calendar-key-item">
+
+                            <span class="calendar-key-dot-health"></span>
+
+                            <span>Health Log</span>
+
+                        </div>
+
+                        <div class="calendar-key-item">
+
+                            <span class="calendar-key-dot-activity"></span>
+
+                            <span>Activity Log</span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="yearControls">
+
+                <button type="button" onclick="changeYear(-1)">
+                    ‹
+                </button>
+
+                <span id="yearLabel"></span>
+
+                <button type="button" onclick="changeYear(1)">
+                    ›
+                </button>
+
+            </div>
+
+        </div>
+
+        <div id="yearView"></div>
+
+    </div>
+
+    <script>
+
+        function logout() {
+            localStorage.removeItem("access_token");
+            window.location.href = "/";
+        }
+
+        function account() {
+            window.location.href = "/account";
+        }
+
+        const datePicker = document.getElementById("datePicker");
+
+        datePicker.onchange = function () {
+            window.location.href = `/calendar/${this.value}`;
+        };
+
+        function authHeaders() {
+            const token = localStorage.getItem("access_token");
+
+            if (!token) {
+                window.location.href = "/";
+                return {};
+            }
+
+            return {
+                "Authorization": `Bearer ${token}`
+            };
+        }
+
+        function dataVisualizations() {
+            window.location.href = `/data-visualizations`
+        }
+
+        // Calendar
+
+        let currentYear = new Date().getFullYear();
+
+        async function loadYearView() {
+
+            const response = await fetch(`/calendar-data/${currentYear}`, {
+                headers: authHeaders()
+            });
+
+            const yearView = document.getElementById("yearView");
+
+            if (!response.ok) {
+                yearView.innerHTML =
+                    "<p>Could not load calendar data.</p>";
+                return;
+            }
+
+            const datesWithData = await response.json();
+            const dataSet = new Map(
+                datesWithData.map(item => [
+                    item.date,
+                    {
+                        hasActivity: item.has_activity,
+                        hasHealth: item.has_health
+                    }
+                ])
+            );
+
+            document.getElementById("yearLabel").textContent =
+                currentYear;
+
+            yearView.innerHTML = "";
+
+            for (let month = 0; month < 12; month++) {
+
+                const monthDiv = document.createElement("div");
+                monthDiv.className = "month";
+
+                const monthName = new Date(
+                    currentYear,
+                    month,
+                    1
+                ).toLocaleString("default", {
+                    month: "long"
+                });
+
+                monthDiv.innerHTML = `
+                <h3>${monthName}</h3>
+
+                <div class="weekdays">
+                    <div>Su</div>
+                    <div>Mo</div>
+                    <div>Tu</div>
+                    <div>We</div>
+                    <div>Th</div>
+                    <div>Fr</div>
+                    <div>Sa</div>
+                </div>
+
+                <div class="days"></div>
+            `;
+
+                const daysDiv = monthDiv.querySelector(".days");
+
+                const firstDay = new Date(
+                    currentYear,
+                    month,
+                    1
+                ).getDay();
+
+                const daysInMonth = new Date(
+                    currentYear,
+                    month + 1,
+                    0
+                ).getDate();
+
+                for (let i = 0; i < firstDay; i++) {
+                    const empty = document.createElement("div");
+                    empty.className = "empty-day";
+                    daysDiv.appendChild(empty);
+                }
+
+                for (let day = 1; day <= daysInMonth; day++) {
+
+                    const date =
+                        `${currentYear}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+
+                    const dayDiv = document.createElement("div");
+
+                    dayDiv.className = "day";
+                    dayDiv.textContent = day;
+
+                    const data = dataSet.get(date);
+
+                    if (data) {
+                        if (data.hasActivity && data.hasHealth) {
+                            dayDiv.classList.add("has-activity", "has-health");
+                        }
+                        else if (data.hasActivity) {
+                            dayDiv.classList.add("has-activity");
+                        }
+                        else if (data.hasHealth) {
+                            dayDiv.classList.add("has-health");
+                        }
+                    }
+
+                    dayDiv.onclick = function () {
+                        window.location.href =
+                            `/calendar/${date}`;
+                    };
+
+                    daysDiv.appendChild(dayDiv);
+                }
+
+                yearView.appendChild(monthDiv);
+            }
+        }
+
+        function changeYear(amount) {
+            currentYear += amount;
+            loadYearView();
+        }
+
+        loadYearView();
+    </script>
+
+</body>
+
+</html>

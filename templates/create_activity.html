@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Create Activity</title>
+
+    <link rel="stylesheet" href="/static/style.css">
+
+</head>
+
+<body class="create-page">
+
+    <div class="page">
+
+        <div class="page-header">
+
+            <h1 id="createActivityTitle"></h1>
+
+            <button type="button" class="logout-button" onclick="logout()">
+                Log Out
+            </button>
+
+            <button type="button" class="account-button" onclick="account()">
+                Account
+            </button>
+
+            <div class="date-controls">
+
+                <div class="date-row">
+
+                    <label for="datePicker">
+                        Change Date:
+                    </label>
+
+                    <input type="date" id="datePicker" required>
+
+                    <button type="Button" onclick="viewCalendarYear()">
+                        View Calendar Year
+                    </button>
+
+                    <button type="Button" onclick="returnToLogPage()">
+                        Return To Daily Log
+                    </button>
+
+                </div>
+
+            </div>
+
+            <form id="ActivityEntryForm">
+
+                <div class="activity-category">
+
+                    <label for="category">
+                        Select Activity Category:
+                    </label>
+
+                    <select id="category" required>
+                        <option value="" disabled selected>Category</option>
+                        <option value="running">Running</option>
+                        <option value="walking">Walking</option>
+                        <option value="cycling">Cycling</option>
+                        <option value="weightlifting">Weightlifting</option>
+                    </select>
+
+                    <button type="submit">
+                        Continue
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <script>
+
+        const token = localStorage.getItem("access_token");
+
+        if (!token) {
+            window.location.href = "/";
+        }
+
+        function logout() {
+            localStorage.removeItem("access_token");
+            window.location.href = "/";
+        }
+
+        function account() {
+            window.location.href = "/account";
+        }
+
+        const activityDate = window.location.pathname.split("/").pop();
+
+        document.getElementById("createActivityTitle").textContent =
+            `Create Activity For ${activityDate}`;
+
+        const datePicker = document.getElementById("datePicker");
+
+        datePicker.value = activityDate;
+
+        datePicker.onchange = function () {
+            window.location.href = `/create-activity/${this.value}`;
+        };
+
+        function viewCalendarYear() {
+            window.location.href = `/calendar`
+        }
+
+        function returnToLogPage() {
+            window.location.href = `/calendar/${activityDate}`
+        }
+
+        document.getElementById("ActivityEntryForm").onsubmit = function (e) {
+
+            e.preventDefault();
+
+            const category = document.getElementById("category").value;
+
+            if (category) {
+                window.location.href = `/create-activity/${category}/${activityDate}`;
+            } else {
+                alert("Select a category");
+            }
+        }
+    </script>
+
+</body>
+
+</html>

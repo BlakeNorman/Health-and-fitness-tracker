@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+    <title>Account</title>
+
+    <link rel="stylesheet" href="/static/style.css">
+
+</head>
+
+<body class="account-page">
+
+    <div class="page">
+
+        <div class="page-header">
+
+            <h1>Account</h1>
+
+            <button type="button" class="logout-button" onclick="logout()">
+                Log Out
+            </button>
+
+            <div class="date-controls">
+
+                <div class="date-row">
+
+                    <label for="datePicker">
+                        Go To Log Date:
+                    </label>
+
+                    <input type="date" id="datePicker">
+
+                    <button type="Button" onclick="viewCalendarYear()">
+                        View Calendar Year
+                    </button>
+
+                    <button type="button" onclick="dataVisualizations()">
+                        View Graphs
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="module create-form-module">
+
+            <button id="changePasswordButton" type="button" class="button-primary"
+                onclick="showHideChangePasswordForm()">
+                Change Password
+            </button>
+
+            <button id="deleteAccountButton" type="button" class="button-primary" onclick="showHideDeleteAccountForm()">
+                Delete Account
+            </button>
+
+            <form id="changePasswordForm" hidden>
+
+                <h2>Change Password Form</h2>
+
+                <div class="form-group">
+
+                    <label for="currentPassword">
+                        Current Password
+                    </label>
+
+                    <input id="currentPassword" type="password" required placeholder="Current Password"
+                        autocomplete="current-password">
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="newPassword">
+                        New Password
+                    </label>
+
+                    <input id="newPassword" type="password" required placeholder="New Password"
+                        autocomplete="new-password">
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="confirmNewPassword">
+                        Confirm New Password
+                    </label>
+
+                    <input id="confirmNewPassword" type="password" required placeholder="New Password">
+
+                </div>
+
+                <div class="form-submit">
+
+                    <button type="submit" class="button-danger">
+                        Change Password
+                    </button>
+
+                </div>
+
+            </form>
+
+            <form id="deleteAccountForm" hidden>
+
+                <h2>Delete Account Form</h2>
+
+                <div class="form-group">
+
+                    <label for="password">
+                        Password
+                    </label>
+
+                    <input id="password" type="password" required placeholder="Password" autocomplete="password">
+
+                </div>
+
+                <div class="form-submit">
+
+                    <button type="submit" class="button-danger">
+                        Delete Account
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <script>
+
+        function logout() {
+            localStorage.removeItem("access_token");
+            window.location.href = "/";
+        }
+
+        const datePicker = document.getElementById("datePicker");
+
+        datePicker.onchange = function () {
+            window.location.href = `/calendar/${this.value}`;
+        };
+
+        function viewCalendarYear() {
+            window.location.href = `/calendar`
+        }
+
+        function dataVisualizations() {
+            window.location.href = `/data-visualizations`
+        }
+
+        function authHeaders() {
+            const token = localStorage.getItem("access_token");
+
+            if (!token) {
+                window.location.href = "/";
+                return {};
+            }
+
+            return {
+                "Authorization": `Bearer ${token}`
+            };
+        }
+
+        // Change Password
+
+        function showHideChangePasswordForm() {
+
+            const changePasswordForm = document.getElementById("changePasswordForm");
+
+            const changePasswordButton = document.getElementById("changePasswordButton");
+
+            const deleteAccountForm = document.getElementById("deleteAccountForm");
+
+            const deleteAccountButton = document.getElementById("deleteAccountButton");
+
+            if (changePasswordForm.hidden) {
+
+                changePasswordForm.hidden = false;
+                changePasswordButton.textContent = "Cancel Change Password";
+
+                if (deleteAccountForm.hidden === false) {
+
+                    deleteAccountForm.hidden = true;
+                    deleteAccountButton.textContent = "Delete Account";
+                }
+
+            } else {
+
+                changePasswordForm.hidden = true;
+                changePasswordButton.textContent = "Change Password";
+
+            }
+        }
+
+        document.getElementById("changePasswordForm").onsubmit = async function (e) {
+
+            e.preventDefault();
+
+            const currentPassword = document.getElementById("currentPassword").value;
+
+            const newPassword = document.getElementById("newPassword").value;
+
+            const confirmNewPassword = document.getElementById("confirmNewPassword").value;
+
+            if (newPassword !== confirmNewPassword) {
+                alert("New passwords do not match");
+                return;
+            }
+
+            const response = await fetch('/user/account', {
+
+                method: "PATCH",
+
+                headers: {
+                    ...authHeaders(),
+                    "Content-type": "application/json"
+                },
+
+                body: JSON.stringify({ current_password: currentPassword, new_password: newPassword })
+
+            });
+
+            if (response.ok) {
+
+                alert("Password Changed");
+
+                localStorage.removeItem("access_token");
+
+                window.location.href = "/";
+
+            } else {
+
+                const error = await response.json();
+
+                alert(error.detail || "Could not change password");
+
+            }
+
+        };
+
+        // Delete Account
+
+        function showHideDeleteAccountForm() {
+
+            const deleteAccountForm = document.getElementById("deleteAccountForm");
+
+            const deleteAccountButton = document.getElementById("deleteAccountButton");
+
+            const changePasswordForm = document.getElementById("changePasswordForm");
+
+            const changePasswordButton = document.getElementById("changePasswordButton");
+
+            if (deleteAccountForm.hidden) {
+
+                deleteAccountForm.hidden = false;
+                deleteAccountButton.textContent = "Cancel Delete Account";
+
+                if (changePasswordForm.hidden === false) {
+
+                    changePasswordForm.hidden = true;
+                    changePasswordButton.textContent = "Change Password";
+                }
+
+            } else {
+
+                deleteAccountForm.hidden = true;
+                deleteAccountButton.textContent = "Delete Account";
+
+            }
+        }
+
+        document.getElementById("deleteAccountForm").onsubmit = async function (e) {
+
+            e.preventDefault();
+
+            const confirmed = confirm("Are you sure you want to delete this account?");
+
+            if (!confirmed) {
+                return;
+            }
+
+            const password = document.getElementById("password").value;
+
+            const response = await fetch("/user/account", {
+
+                method: "DELETE",
+
+                headers: {
+                    ...authHeaders(),
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({ "password": password })
+
+            });
+
+            if (response.ok) {
+
+                alert("Account deleted");
+
+                localStorage.removeItem("access_token");
+
+                window.location.href = "/";
+
+            } else {
+
+                const error = await response.json();
+
+                alert(error.detail || "Could not delete account");
+
+            }
+
+        };
+
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Data Graphs</title>
+
+    <link rel="stylesheet" href="/static/style.css">
+
+</head>
+
+<body class="data-visualizations-page">
+
+    <div class="page">
+
+        <div class="page-header">
+
+            <h1 id="dataVisualizationsTitle"></h1>
+
+            <button type="button" class="logout-button" onclick="logout()">
+                Log Out
+            </button>
+
+            <button type="button" class="account-button" onclick="account()">
+                Account
+            </button>
+
+            <div class="date-controls">
+
+                <div class="date-row">
+
+                    <label for="logDatePicker">
+                        Go to Log Date:
+                    </label>
+
+                    <input type="date" id="logDatePicker">
+
+                    <button type="Button" onclick="viewCalendarYear()">
+                        View Calendar Year
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="data-visualization-grid">
+
+        <section>
+
+            <!-- ##########################################
+                            Health Graphs
+            ########################################### -->
+
+            <div class="module" id="healthGraphs">
+
+                <h2>Health Graphs</h2>
+
+                <!-- ##########################################
+                        Calories/Water/Weight Graph
+                ########################################### -->
+
+                <h3>Calories/Water/Weight</h3>
+
+                <div class="graph-controls">
+
+                    <div class="graph-row">
+
+                        <label for="healthGraphParameter">
+                            Select Category:
+                        </label>
+
+                        <select id="healthGraphParameter">
+                            <option value="calories">Calories</option>
+                            <option value="water">Water</option>
+                            <option value="weight">Weight</option>
+                        </select>
+
+                    </div>
+
+                    <div class="graph-row">
+
+                        <label for="healthGraphRange">
+                            Time Period:
+                        </label>
+
+                        <select id="healthGraphRange">
+                            <option value="all">All</option>
+                            <option value="year">Year</option>
+                            <option value="month">Month</option>
+                        </select>
+
+                        <input type="date" id="healthGraphDatePicker">
+                    </div>
+
+                    <div class="graph-buttons">
+
+                        <button type="button" onclick="showHealthGraph()">
+                            Show Graph
+                        </button>
+
+                        <button type="button" onclick="hideHealthGraph()">
+                            Hide Graph
+                        </button>
+
+                    </div>
+
+                    <div id="healthGraph" hidden></div>
+
+                </div>
+
+                <!-- ##########################################
+                                Macros Graph
+                ########################################### -->
+
+                <h3>Macros</h3>
+
+                <div class="graph-controls">
+
+                    <div class="graph-row">
+
+                        <label for="macrosGraphParameter">
+                            Select Category:
+                        </label>
+
+                        <select id="macrosGraphParameter">
+                            <option value="all">All</option>
+                            <option value="fats">Fats</option>
+                            <option value="carbs">Carbs</option>
+                            <option value="protein">Protein</option>
+                        </select>
+
+                    </div>
+
+                    <div class="graph-row">
+
+                        <label for="macrosGraphRange">
+                            Time Period:
+                        </label>
+
+                        <select id="macrosGraphRange">
+                            <option value="all">All</option>
+                            <option value="year">Year</option>
+                            <option value="month">Month</option>
+                        </select>
+
+                        <input type="date" id="macrosGraphDatePicker">
+
+                    </div>
+
+                    <div class="graph-buttons">
+
+                        <button type="button" onclick="showMacrosGraph()">
+                            Show Graph
+                        </button>
+
+                        <button type="button" onclick="hideMacrosGraph()">
+                            Hide Graph
+                        </button>
+
+                    </div>
+
+                    <div id="macrosGraph" hidden></div>
+
+                </div>
+
+                <!-- ##########################################
+                                Sleep Times Graph
+                ########################################### -->
+
+                <h3>Sleep Times</h3>
+
+                <div class="graph-controls">
+
+                    <div class="graph-row">
+
+                        <label for="sleepGraphRange">
+                            Time Period:
+                        </label>
+
+                        <select id="sleepGraphRange">
+                            <option value="all">All</option>
+                            <option value="year">Year</option>
+                            <option value="month">Month</option>
+                        </select>
+
+                        <input type="date" id="sleepGraphDatePicker">
+
+                    </div>
+
+                    <div class="graph-buttons">
+
+                        <button type="button" onclick="showSleepGraph()">
+                            Show Graph
+                        </button>
+
+                        <button type="button" onclick="hideSleepGraph()">
+                            Hide Graph
+                        </button>
+
+                    </div>
+
+                    <div id="sleepGraph" hidden></div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <section>
+
+            <!-- ##########################################
+                            Activity Graphs
+            ########################################### -->
+
+            <div class="module" id="activityGraphs">
+
+                <h2>Activity Graphs</h2>
+
+                <!-- ##########################################
+                            Activity Durations Graph
+                ########################################### -->
+
+                <h3>Durations</h3>
+
+                <div class="graph-controls">
+
+                    <div class="graph-row">
+
+                        <label for="activityDurationsCategory">
+                            Select Category:
+                        </label>
+
+                        <select id="activityDurationsCategory">
+                            <option value="all">All</option>
+                            <option value="Running">Running</option>
+                            <option value="Walking">Walking</option>
+                            <option value="Cycling">Cycling</option>
+                            <option value="Weightlifting">Weightlifting</option>
+                        </select>
+
+                    </div>
+
+                    <div class="graph-row">
+
+                        <label for="activityDurationsRange">
+                            Time Period:
+                        </label>
+
+                        <select id="activityDurationsRange">
+                            <option value="all">All</option>
+                            <option value="year">Year</option>
+                            <option value="month">Month</option>
+                        </select>
+
+                        <input type="date" id="activityDurationsDatePicker">
+
+                    </div>
+
+                    <div class="graph-buttons">
+
+                        <button type="button" onclick="showActivityDurationsGraph()">
+                            Show Graph
+                        </button>
+
+                        <button type="button" onclick="hideActivityDurationsGraph()">
+                            Hide Graph
+                        </button>
+
+                    </div>
+
+                    <div id="activityDurationsGraph" hidden></div>
+
+                </div>
+
+                <!-- ##########################################
+                                Distances Graph
+                ########################################### -->
+
+                <h3>Distances</h3>
+
+                <div class="graph-controls">
+
+                    <div class="graph-row">
+
+                        <label for="activityDistancesCategory">
+                            Select Category:
+                        </label>
+
+                        <select id="activityDistancesCategory">
+                            <option value="all">All</option>
+                            <option value="Running">Running</option>
+                            <option value="Walking">Walking</option>
+                            <option value="Cycling">Cycling</option>
+                        </select>
+
+                    </div>
+
+                    <div class="graph-row">
+
+                        <label for="activityDistanceGraphType">
+                            Graph Type:
+                        </label>
+
+                        <select id="activityDistancesGraphType">
+                            <option value="standard">Standard</option>
+                            <option value="cumulative">Cumulative</option>
+                        </select>
+
+                    </div>
+
+                    <div class="graph-row">
+
+                        <label for="activityDistancesRange">
+                            Time Period:
+                        </label>
+
+                        <select id="activityDistancesRange">
+                            <option value="all">All</option>
+                            <option value="year">Year</option>
+                            <option value="month">Month</option>
+                        </select>
+
+                        <input type="date" id="activityDistancesDatePicker">
+
+                    </div>
+
+                    <div class="graph-buttons">
+
+                        <button type="button" onclick="showActivityDistancesGraph()">
+                            Show Graph
+                        </button>
+
+                        <button type="button" onclick="hideActivityDistancesGraph()">
+                            Hide Graph
+                        </button>
+
+                    </div>
+
+                    <div id="activityDistancesGraph" hidden></div>
+
+                </div>
+
+                <!-- ##########################################
+                            Activity Paces Graph
+                ########################################### -->
+
+                <h3>Paces</h3>
+
+                <div class="graph-controls">
+
+                    <div class="graph-row">
+
+                        <label for="activityPacesCategory">
+                            Select Category:
+                        </label>
+
+                        <select id="activityPacesCategory">
+                            <option value="all">All</option>
+                            <option value="Running">Running</option>
+                            <option value="Walking">Walking</option>
+                            <option value="Cycling">Cycling</option>
+                        </select>
+
+                    </div>
+
+                    <div class="graph-row">
+
+                        <label for="activityPacesRange">
+                            Time Period:
+                        </label>
+
+                        <select id="activityPacesRange">
+                            <option value="all">All</option>
+                            <option value="year">Year</option>
+                            <option value="month">Month</option>
+                        </select>
+
+                        <input type="date" id="activityPacesDatePicker">
+
+                    </div>
+
+                    <div class="graph-buttons">
+
+                        <button type="button" onclick="showActivityPacesGraph()">
+                            Show Graph
+                        </button>
+
+                        <button type="button" onclick="hideActivityPacesGraph()">
+                            Hide Graph
+                        </button>
+
+                    </div>
+
+                    <div id="activityPacesGraph" hidden></div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </div>
+
+    <script src="https://cdn.plot.ly/plotly-3.0.1.min.js"></script>
+
+    <script src="/static/js/activity_graphs.js"></script>
+    <script src="/static/js/health_graphs.js"></script>
+
+    <script>
+
+        function logout() {
+            localStorage.removeItem("access_token");
+            window.location.href = "/";
+        }
+
+        function account() {
+            window.location.href = "/account";
+        }
+
+        function authHeaders() {
+            const token = localStorage.getItem("access_token");
+
+            return {
+                "Authorization": `Bearer ${token}`
+            };
+        }
+
+        document.getElementById("dataVisualizationsTitle").textContent =
+            `Data Graphs`;
+
+        logDatePicker.onchange = function () {
+            window.location.href = `/calendar/${this.value}`;
+        };
+
+        function viewCalendarYear() {
+            window.location.href = `/calendar`
+        }
+
+        function formatTimeToHHMMSS(seconds) {
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const secs = Math.round(seconds % 60);
+
+            return `${String(hours).padStart(2, "0")}` +
+                `:${String(minutes).padStart(2, "0")}` +
+                `:${String(secs).padStart(2, "0")}`;
+        }
+
+
+    </script>
+
+</body>
+
+</html>

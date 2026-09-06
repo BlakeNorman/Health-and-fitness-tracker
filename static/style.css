@@ -1,0 +1,1478 @@
+/* =========================================================
+   GLOBAL / BASE
+   ========================================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #000;
+    color: #fff;
+    text-align: left;
+}
+
+.page {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: #353535;
+}
+
+
+/* =========================================================
+   SHARED: PAGE HEADER
+   ========================================================= */
+
+.page-header {
+    position: relative;
+    text-align: center;
+}
+
+.page-header h1 {
+    margin: 0 0 20px;
+}
+
+.logout-button {
+    position: absolute;
+    top: 0;
+    right: 0;
+
+    background-color: #eb182d;
+    color: #fff;
+    font-weight: bold;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.logout-button:hover {
+    background-color: #ac2432;
+}
+
+.account-button {
+    position: absolute;
+    top: 40px;
+    right: 0;
+
+    background-color: #2724cc;
+    color: #fff;
+    font-weight: bold;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.account-button:hover {
+    background-color: rgb(20, 9, 121);
+}
+
+.page-header h1 {
+    margin-bottom: 20px;
+}
+
+
+/* =========================================================
+   SHARED: DATE CONTROLS
+   ========================================================= */
+
+.date-controls {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.date-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.date-controls label {
+    font-weight: bold;
+}
+
+
+/* =========================================================
+   SHARED: MODULES
+   ========================================================= */
+
+.module {
+    background: rgb(43, 43, 43);
+    border: 1px solid #777;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    text-align: left;
+
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.module:hover {
+    border-color: #fff;
+
+    box-shadow:
+        0 6px 18px rgba(0, 0, 0, 0.45);
+}
+
+.module h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    font-size: 1.25rem;
+}
+
+.module h4 {
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.module p {
+    margin: 0.65rem 0;
+    line-height: 1.5;
+}
+
+.module ul {
+    margin-top: 0.5rem;
+    padding-left: 1.5rem;
+}
+
+.module li {
+    margin-bottom: 0.35rem;
+}
+
+
+/* =========================================================
+   SHARED: FORM COMPONENTS
+   ========================================================= */
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group>label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.form-group textarea {
+    width: 100%;
+    min-width: 350px;
+    min-height: 100px;
+
+    padding: 0.65rem;
+
+    font-family: inherit;
+    font-size: 0.95rem;
+
+    border: 1px solid #c8cdd3;
+    border-radius: 6px;
+
+    resize: vertical;
+}
+
+.form-group>input[type="number"] {
+    width: 10rem;
+    padding: 0.5rem 0.65rem;
+
+    font-family: inherit;
+    font-size: 0.95rem;
+
+    border: 1px solid #c8cdd3;
+    border-radius: 6px;
+}
+
+.form-help {
+    margin-top: 0.5rem;
+    color: #aaa;
+    font-size: 0.9rem;
+}
+
+.form-submit {
+    display: flex;
+    justify-content: center;
+    margin-top: 0rem;
+}
+
+.section-label {
+    font-weight: bold;
+}
+
+
+/* Shared input focus */
+
+input:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+    border-color: #4a90e2;
+
+    box-shadow:
+        0 0 0 3px rgba(74, 144, 226, 0.15);
+}
+
+
+/* =========================================================
+   SHARED: BUTTONS
+   ========================================================= */
+
+.module button {
+    padding: 0.55rem 1rem;
+    margin-top: 0.75rem;
+    margin-right: 0.5rem;
+    margin-bottom: 1.25rem;
+
+    border: none;
+    border-radius: 6px;
+
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.1s ease,
+        box-shadow 0.15s ease,
+        background 0.15s ease;
+}
+
+
+/* Primary button */
+
+.button-primary {
+    background: #197df0;
+    color: #fff;
+}
+
+.button-primary:hover {
+    background: #2e6aa7;
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 3px 7px rgba(0, 0, 0, 0.3);
+}
+
+
+/* Danger button */
+
+.button-danger {
+    padding: 0.45rem 0.75rem;
+
+    border: none;
+    border-radius: 6px;
+
+    background: #c01425;
+    color: #fff;
+
+    font-family: inherit;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.1s ease,
+        box-shadow 0.15s ease,
+        background 0.15s ease;
+}
+
+.button-danger:hover {
+    background: #a3232f;
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 3px 7px rgba(0, 0, 0, 0.3);
+}
+
+
+/* =========================================================
+   PAGE: DAILY LOG
+   ========================================================= */
+
+.create-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.log-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2rem;
+    align-items: start;
+}
+
+.log-grid section {
+    min-width: 0;
+}
+
+.log-grid h2 {
+    text-align: center;
+    margin: 0 0 1rem;
+
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+
+.log-grid section>h2::after {
+    content: "";
+
+    display: block;
+
+    width: 75px;
+    height: 3px;
+
+    margin: 0.5rem auto 0;
+
+    background: #ffffff;
+    border-radius: 2px;
+}
+
+
+/* =========================================================
+   PAGE: DATA VISUALIZATIONS
+   ========================================================= */
+
+.data-visualization-grid {
+    display: grid;
+    grid-template-columns: max-content max-content;
+
+    justify-content: center;
+    align-items: start;
+
+    gap: 2rem;
+
+    width: fit-content;
+    max-width: none;
+
+    margin: 0 auto;
+}
+
+#healthGraphs,
+#activityGraphs {
+    width: fit-content;
+    max-width: none;
+}
+
+
+/* =========================================================
+   DATA VISUALIZATIONS: GRAPH CONTROLS
+   ========================================================= */
+
+.graph-controls {
+    margin: 1rem 0 1.5rem;
+    padding: 1.25rem;
+
+    background: #9a9ea5;
+    border: 1px solid #dfe3e8;
+    border-radius: 10px;
+
+    box-shadow:
+        0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+.graph-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+
+    margin-bottom: 0.9rem;
+}
+
+.graph-row label {
+    min-width: 7.5rem;
+
+    font-weight: 600;
+    color: #333;
+}
+
+.graph-row select,
+.graph-row input[type="date"] {
+    padding: 0.5rem 0.65rem;
+
+    font-size: 0.95rem;
+    font-family: inherit;
+
+    border: 1px solid #c8cdd3;
+    border-radius: 6px;
+
+    background: #fff;
+}
+
+.graph-buttons {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 0.25rem;
+}
+
+.graph-buttons button {
+    padding: 0.55rem 1rem;
+
+    border: none;
+    border-radius: 6px;
+
+    font-size: 0.95rem;
+    font-family: inherit;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.1s ease,
+        box-shadow 0.15s ease,
+        background 0.15s ease;
+}
+
+.graph-buttons button:hover {
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+.graph-buttons button:first-child {
+    background: #0077ff;
+    color: #fff;
+}
+
+.graph-buttons button:last-child {
+    background: #696b6d;
+    color: #fff;
+}
+
+.graph-buttons button:last-child:hover {
+    background: #7a7c7e;
+}
+
+
+/* =========================================================
+   PAGE: CALENDAR
+   ========================================================= */
+
+#yearView {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 300px));
+
+    gap: 30px;
+
+    margin-top: 30px;
+
+    justify-content: center;
+}
+
+.month {
+    width: 300px;
+
+    padding: 15px;
+
+    background: rgb(61, 61, 61);
+
+    border: 1px solid #fff;
+    border-radius: 12px;
+}
+
+.month h3 {
+    text-align: center;
+    margin-top: 0;
+}
+
+.weekdays,
+.days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+}
+
+.weekdays div {
+    padding: 5px 0;
+
+    text-align: center;
+    font-weight: bold;
+    font-size: 0.8rem;
+}
+
+.day,
+.empty-day {
+    width: 28px;
+    height: 28px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.day {
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.day:hover {
+    background: #afafaf;
+}
+
+.day.has-activity {
+    background-color: #43A047;
+    color: #fff;
+    font-weight: bold;
+}
+
+.day.has-health {
+    background-color: #1976D2;
+    color: #fff;
+    font-weight: bold;
+}
+
+.day.has-activity.has-health {
+    background: linear-gradient(90deg,
+            #1976D2 50%,
+            #43A047 50%);
+    color: #fff;
+    font-weight: bold;
+}
+
+.calendar-key {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+
+    font-size: 1rem;
+    font-weight: bold;
+    color: #ffffff;
+
+    padding: 12px;
+    padding-bottom: 10px;
+    padding-top: 10px;
+
+    background: rgb(61, 61, 61);
+
+    border: 1px solid #fff;
+    border-radius: 12px;
+
+    margin-top: 8px;
+}
+
+.calendar-key-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.calendar-key>div {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    white-space: nowrap;
+}
+
+.calendar-key-dot-activity {
+    width: 16px;
+    height: 16px;
+
+    background: #43A047;
+    border-radius: 50%;
+
+    display: inline-block;
+}
+
+.calendar-key-dot-health {
+    width: 16px;
+    height: 16px;
+
+    background: #1976D2;
+    border-radius: 50%;
+
+    display: inline-block;
+}
+
+
+/* Calendar controls */
+
+.yearControls {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 15px;
+
+    margin-top: 0px;
+    margin-bottom: -10px;
+}
+
+.yearControls button {
+    width: 40px;
+    height: 40px;
+
+    background: rgb(61, 61, 61);
+    color: #fff;
+
+    border: 1px solid #666;
+    border-radius: 8px;
+
+    font-size: 1.5rem;
+
+    cursor: pointer;
+}
+
+.yearControls button:hover {
+    background: #555;
+}
+
+#yearLabel {
+    min-width: 70px;
+    height: 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgb(61, 61, 61);
+    color: #fff;
+
+    border: 1px solid #666;
+    border-radius: 8px;
+
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+
+/* =========================================================
+   PAGE: CREATE ACTIVITY
+   ========================================================= */
+
+.activity-create-module,
+.create-form-module {
+    width: fit-content;
+    max-width: 100%;
+
+    margin: 30px auto;
+    padding: 25px 35px;
+}
+
+
+/* Activity category */
+
+.activity-category {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    gap: 10px;
+
+    margin-bottom: 15px;
+}
+
+.activity-category label {
+    font-weight: bold;
+}
+
+/* =========================================================
+   PAGE: CREATE HEALTH LOG
+   ========================================================= */
+
+.health-log-create-module,
+.create-form-module {
+
+    width: fit-content;
+    max-width: 100%;
+
+    margin: 30px auto;
+
+    padding: 25px 35px;
+
+}
+
+
+/* =========================================================
+   CREATE HEALTH: NUTRITION CALCULATION
+   ========================================================= */
+
+#nutritionCalculation {
+
+    padding: 0.5rem 0.65rem;
+
+    font-family: inherit;
+    font-size: 0.95rem;
+
+    border: 1px solid #c8cdd3;
+    border-radius: 6px;
+
+    background: #fff;
+
+    min-width: 18rem;
+
+}
+
+
+/* =========================================================
+   CREATE HEALTH: CALORIES
+   ========================================================= */
+
+#calories {
+
+    width: 12rem;
+
+}
+
+
+/* =========================================================
+   CREATE HEALTH: MACROS
+   ========================================================= */
+
+.macro-inputs {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 0.6rem;
+
+}
+
+.macro-row {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 0.75rem;
+
+}
+
+.macro-row label {
+
+    width: 5rem;
+
+    font-weight: 600;
+
+}
+
+.macro-row input {
+
+    width: 7rem;
+
+    padding: 0.5rem 0.65rem;
+
+    font-family: inherit;
+    font-size: 0.95rem;
+
+    border: 1px solid #c8cdd3;
+
+    border-radius: 6px;
+
+}
+
+
+/* =========================================================
+   CREATE HEALTH: FOOD SECTION
+   ========================================================= */
+
+.food-section {
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    width: fit-content;
+
+    max-width: 100%;
+
+    margin: 0 auto;
+
+    text-align: center;
+
+}
+
+.food-section h3 {
+
+    margin-top: 0;
+
+    margin-bottom: 1rem;
+
+}
+
+#foodList {
+
+    display: flex;
+
+    flex-direction: column;
+
+    width: fit-content;
+
+    max-width: 100%;
+
+    gap: 10px;
+
+}
+
+
+/* =========================================================
+   CREATE HEALTH: FOOD ROW
+   ========================================================= */
+
+.food {
+
+    display: flex;
+
+    align-items: center;
+
+    width: fit-content;
+
+    max-width: 100%;
+
+    gap: 0.6rem;
+
+    margin: 0 auto 0.75rem;
+
+    padding: 0.75rem;
+
+    background: #9a9ea5;
+
+    border: 1px solid #666;
+
+    border-radius: 8px;
+
+}
+
+
+/* Food name */
+
+.foodName {
+
+    width: 12rem;
+
+    margin-bottom: 5px;
+
+    padding: 0.5rem 0.6rem;
+
+    font-family: inherit;
+    font-size: 0.9rem;
+
+    border: 1px solid #c8cdd3;
+
+    border-radius: 6px;
+
+}
+
+
+/* =========================================================
+   CREATE HEALTH: FOOD NUTRITION
+   ========================================================= */
+
+.food-nutrition {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 0.5rem;
+
+}
+
+
+/*
+   This is important.
+
+   Your JavaScript uses:
+
+       section.hidden = true;
+
+   when manual calculation is selected.
+
+   This rule makes the hidden attribute actually remove
+   the nutrition fields from the layout.
+*/
+
+.food-nutrition[hidden] {
+
+    display: none;
+
+}
+
+
+.food-nutrition input {
+
+    width: 7rem;
+
+    padding: 0.5rem 0.6rem;
+
+    font-family: inherit;
+    font-size: 0.9rem;
+
+    border: 1px solid #c8cdd3;
+
+    border-radius: 6px;
+
+}
+
+
+/* =========================================================
+   CREATE HEALTH: FOOD REMOVE BUTTON
+   ========================================================= */
+
+.food .button-danger {
+
+    margin: 0;
+
+    padding: 0.45rem 0.75rem;
+
+}
+
+
+/* =========================================================
+   CREATE HEALTH: SLEEP
+   ========================================================= */
+
+.sleep-inputs {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 0.75rem;
+
+}
+
+.sleep-row {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 0.4rem;
+
+}
+
+.sleep-row label {
+
+    width: 6rem;
+
+    font-weight: 600;
+
+}
+
+.sleep-row input {
+
+    width: 4.5rem;
+
+    padding: 0.5rem 0.65rem;
+
+    font-family: inherit;
+    font-size: 0.95rem;
+
+    border: 1px solid #c8cdd3;
+
+    border-radius: 6px;
+
+}
+
+.sleep-row select {
+
+    padding: 0.5rem 0.65rem;
+
+    font-family: inherit;
+    font-size: 0.95rem;
+
+    border: 1px solid #c8cdd3;
+
+    border-radius: 6px;
+
+    background: #fff;
+
+}
+
+.sleep-row span {
+
+    font-weight: bold;
+
+}
+
+
+/* =========================================================
+   CREATE HEALTH: HIDDEN ELEMENTS
+   ========================================================= */
+
+#manualNutrition[hidden] {
+
+    display: none;
+
+}
+
+
+/* =========================================================
+   CREATE HEALTH: RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 800px) {
+
+    .food {
+
+        flex-wrap: wrap;
+
+        justify-content: center;
+
+    }
+
+    .food-inputs {
+
+        display: flex;
+
+        flex-direction: column;
+
+        gap: 0.5rem;
+
+        width: 100%;
+
+        align-items: center;
+
+    }
+
+    .foodName {
+
+        width: 12rem;
+
+    }
+
+    .food-nutrition {
+
+        flex-wrap: wrap;
+
+        justify-content: center;
+
+    }
+
+}
+
+
+@media (max-width: 680px) {
+
+    .create-form-module {
+
+        width: 100%;
+
+        padding: 20px;
+
+    }
+
+    .food {
+
+        width: 100%;
+
+    }
+
+    .food-inputs {
+
+        width: 100%;
+
+    }
+
+    .foodName {
+
+        width: 100%;
+
+        max-width: 20rem;
+
+    }
+
+    .food-nutrition {
+
+        width: 100%;
+
+        justify-content: center;
+
+    }
+
+    .food-nutrition input {
+
+        flex: 1;
+
+        min-width: 100px;
+
+        max-width: 140px;
+
+    }
+
+    .sleep-row {
+
+        flex-wrap: wrap;
+
+    }
+
+}
+
+
+/* =========================================================
+   CREATE WEIGHTLIFTING: DURATION
+   ========================================================= */
+
+.duration-inputs {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.duration-inputs input {
+    width: 5rem;
+
+    padding: 0.5rem 0.65rem;
+
+    font-family: inherit;
+    font-size: 0.95rem;
+
+    border: 1px solid #c8cdd3;
+    border-radius: 6px;
+}
+
+.duration-inputs span {
+    color: #fff;
+    font-weight: bold;
+}
+
+
+/* =========================================================
+   CREATE WEIGHTLIFTING: EXERCISES
+   ========================================================= */
+
+.exercise-module {
+    width: fit-content;
+    max-width: 100%;
+    margin: 0 auto;
+    margin-bottom: 1rem;
+}
+
+.exercise-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    width: fit-content;
+    max-width: 100%;
+
+    margin: 0 auto;
+
+    text-align: center;
+}
+
+.exercise-section h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+
+#exerciseList {
+    display: flex;
+    flex-direction: column;
+
+    width: fit-content;
+    max-width: 100%;
+
+    gap: 10px;
+
+    margin: 0 auto;
+}
+
+.exercise {
+    display: flex;
+    align-items: center;
+
+    width: fit-content;
+    max-width: 100%;
+
+    gap: 0.6rem;
+
+    margin: 0 auto 0.75rem;
+    padding: 0.75rem;
+
+    background: #9a9ea5;
+
+    border: 1px solid #666;
+    border-radius: 8px;
+}
+
+.exercise input {
+    padding: 0.5rem 0.6rem;
+
+    font-family: inherit;
+    font-size: 0.9rem;
+
+    border: 1px solid #c8cdd3;
+    border-radius: 6px;
+}
+
+.exerciseName {
+    width: 180px;
+}
+
+.exerciseWeight,
+.exerciseReps,
+.exerciseSets {
+    width: 120px;
+}
+
+.exercise button {
+    margin: 0;
+    padding: 0.45rem 0.75rem;
+
+    border: none;
+    border-radius: 6px;
+
+    font-family: inherit;
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   SHARED: DRAG HANDLE
+   ========================================================= */
+
+.dragHandle {
+    padding: 0 0.25rem;
+
+    font-size: 22px;
+
+    cursor: grab;
+    user-select: none;
+
+    color: #000;
+}
+
+.dragHandle:active {
+    cursor: grabbing;
+}
+
+
+/* =========================================================
+   SHARED: OTHER COMPONENTS
+   ========================================================= */
+
+.module-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+}
+
+.calendar-label {
+    display: block;
+    margin-bottom: 8px;
+}
+
+.removeButton {
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   RESPONSIVE: GENERAL
+   ========================================================= */
+
+@media (max-width: 1000px) {
+
+    .log-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .data-visualization-grid {
+        grid-template-columns: max-content;
+
+        width: max-content;
+        max-width: 100%;
+    }
+
+    #healthGraphs,
+    #activityGraphs {
+        width: max-content;
+        max-width: 100%;
+    }
+
+    #yearView {
+        grid-template-columns: repeat(2, minmax(0, 300px));
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVE: SMALL SCREENS
+   ========================================================= */
+
+@media (max-width: 680px) {
+
+    .date-controls,
+    .create-buttons {
+        flex-direction: column;
+    }
+
+    #yearView {
+        grid-template-columns: 300px;
+    }
+
+    .create-form-module {
+        width: 100%;
+    }
+
+    .form-group textarea {
+        min-width: 0;
+    }
+
+    .exercise {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .exerciseName {
+        width: 100%;
+    }
+
+    .exerciseWeight,
+    .exerciseReps,
+    .exerciseSets {
+        flex: 1;
+        min-width: 80px;
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVE: GRAPH CONTROLS
+   ========================================================= */
+
+@media (max-width: 600px) {
+
+    .graph-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.4rem;
+    }
+
+    .graph-row label {
+        min-width: auto;
+    }
+
+    .graph-row select,
+    .graph-row input[type="date"] {
+        width: 100%;
+    }
+
+    .graph-buttons {
+        flex-direction: column;
+    }
+
+    .graph-buttons button {
+        width: 100%;
+    }
+}
+
+
+/* =========================================================
+   HIDDEN ELEMENTS
+   ========================================================= */
+
+#yearView[hidden],
+.yearControls[hidden] {
+    display: none;
+}
+
+
+/* =========================================================
+   BACKGROUND IMAGES
+   ========================================================= */
+
+.login-page {
+    min-height: 100vh;
+    background-image: url("/static/images/IMG_3510.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.register-page {
+    min-height: 100vh;
+    background-image: url("/static/images/IMG_4393.jpg");
+    background-size: cover;
+    background-position: 50% 40%;
+    background-repeat: no-repeat;
+}
+
+.account-page {
+    min-height: 100vh;
+    background-image: url("/static/images/IMG_5821.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.request-password-reset-page {
+    min-height: 100vh;
+    background-image: url("/static/images/IMG_5827.jpg");
+    background-size: cover;
+    background-position: 50% 80%;
+    background-repeat: no-repeat;
+}
+
+.reset-password-page {
+    min-height: 100vh;
+    background-image: url("/static/images/IMG_4565.jpg");
+    background-size: cover;
+    background-position: 50% 55%;
+    background-repeat: no-repeat;
+}
+
+.calendar-page {
+    min-height: 100vh;
+    background-image: url("/static/images/IMG_4603.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.daily-log-page {
+    min-height: 100vh;
+    background-image: url("/static/images/IMG_3525.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.create-page {
+    min-height: 100vh;
+    background-image: url("/static/images/IMG_3525.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.modify-page {
+    min-height: 100vh;
+    background-image: url("/static/images/IMG_3525.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.data-visualizations-page {
+    min-height: 100vh;
+    background-image: url("/static/images/IMG_5855.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
