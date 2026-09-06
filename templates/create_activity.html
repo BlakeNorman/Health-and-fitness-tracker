@@ -77,6 +77,8 @@
 
     <script>
 
+        const activityDate = window.location.pathname.split("/").pop();
+
         const token = localStorage.getItem("access_token");
 
         if (!token) {
@@ -94,8 +96,6 @@
         function account() {
             window.location.href = "/account";
         }
-
-        const activityDate = window.location.pathname.split("/").pop();
 
         const datePicker = document.getElementById("datePicker");
 

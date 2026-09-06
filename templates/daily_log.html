@@ -86,6 +86,8 @@
 
     <script>
 
+        const date = window.location.pathname.split("/").pop();
+
         document.getElementById("dateTitle").textContent =
             `Daily Log For ${date}`;
 
@@ -97,8 +99,6 @@
         function account() {
             window.location.href = "/account";
         }
-
-        const date = window.location.pathname.split("/").pop();
 
         const datePicker = document.getElementById("datePicker");
 
